@@ -4,23 +4,23 @@ public interface AgendaCitasTDA {
 	
 	/**
 	 * 
-	 * Sin precondiciones ni parámetros.
+	 * Sin precondiciones ni parï¿½metros.
 	 * 
 	 * */
 	public void inicializar();
 	
 	/**
-	 *  Agrega un nuevo día para agendar citas a sus clientes.
+	 *  Agrega un nuevo dï¿½a para agendar citas a sus clientes.
 	 *  	Si no existe el abogado lo crea y asigna la nueva fecha. 
 	 *  	Si existe el abogado y no la fecha, crea la nueva fecha
 	 *  	Si existe el medico y la fecha no hace nada.
 	 * 
-	 *  Precondición:
+	 *  Precondiciï¿½n:
 	 *  	inicializada.
-	 *  Parámetros: 
+	 *  Parï¿½metros: 
 	 * 		@param abogado  
-	 * 		@param dia cadena de caracteres con los nombre de los días (lunes, martes, etc.)
-	 * 		@param fecha cadena de caracteres con formato AAAA/MM/DD (año, mes, día) 
+	 * 		@param dia cadena de caracteres con los nombre de los dï¿½as (lunes, martes, etc.)
+	 * 		@param fecha cadena de caracteres con formato AAAA/MM/DD (aï¿½o, mes, dï¿½a) 
 	 * 
 	 * */
 	public void agregarNuevoDia(String abogado, String dia, String fecha);
@@ -28,10 +28,10 @@ public interface AgendaCitasTDA {
 	/**
 	 *  Agrega una nueva cita a un abogado para un cliente determinado, en una fecha y hora determinada. 
 	 * 
-	 * Precondición
+	 * Precondiciï¿½n
 	 * 		inicializada, existe el abogado y la fecha pero no existe una cita en esa fecha y horario.
 	 * 
-	 * Parámetros: 
+	 * Parï¿½metros: 
 	 * 		String abogado 
 	 * 		String fecha
 	 * 		String hora
@@ -42,10 +42,10 @@ public interface AgendaCitasTDA {
 	/**
 	 *  Elimina un abogado y a toda su agenda de citas. Si el abogado no existe no hace nada.
 	 * 
-	 * Precondición: 
+	 * Precondiciï¿½n: 
 	 * 		inicializada
 	 * 
-	 * Parámetros: 
+	 * Parï¿½metros: 
 	 * 		String abogado 
 	 * */	
 	public void eliminarAbogado(String abogado);
@@ -54,22 +54,22 @@ public interface AgendaCitasTDA {
 	 *  Elimina un abogado y a toda su agenda de citas para una fecha determinada. 
 	 *  Si el abogado no existe no hace nada.
 	 * 
-	 * Precondición: 
+	 * Precondiciï¿½n: 
 	 * 		inicializada
 	 * 
-	 * Parámetros: 
+	 * Parï¿½metros: 
 	 * 		String abogado
 	 * 		String fecha 
 	 * */	
 	public void eliminarFecha(String abogado, String fecha);
 	
 	/**
-	 * Elimina una cita determinada. Si no concuerda la fecha, la hora y el cliente no se borrará la cita.
+	 * Elimina una cita determinada. Si no concuerda la fecha, la hora y el cliente no se borrarï¿½ la cita.
 	 * 
-	 * Precondición:
+	 * Precondiciï¿½n:
 	 * 		inicializada y existe el turno para ese paciente.
 	 * 
-	 * Parámetros: 
+	 * Parï¿½metros: 
 	 * 		String abogado 
 	 * 		String fecha
 	 * 		String hora
@@ -81,10 +81,10 @@ public interface AgendaCitasTDA {
 	 * Devuelve el verdadero si existe una cita para ese abogado, en esa fecha y en ese horario. 
 	 * Si no existe devuelve falso.
 	 * 
-	 * Precondicón:
+	 * Precondicï¿½n:
 	 * 		inicializada
 	 * 
-	 * Parámetros: 
+	 * Parï¿½metros: 
 	 * 		@param abogado 
 	 * 		@param fecha
 	 * 		@param hora
@@ -94,10 +94,10 @@ public interface AgendaCitasTDA {
 	/**
 	 * Devuelve el nombre del cliente que posee la cita.
 	 * 
-	 * Precondición:
+	 * Precondiciï¿½n:
 	 * 		inicializada y existe la cita
 	 * 
-	 * Parámetros: 
+	 * Parï¿½metros: 
 	 * 		@param abogado 
 	 * 		@param fecha
 	 * 		@param hora
@@ -106,12 +106,12 @@ public interface AgendaCitasTDA {
 	public String clienteEnCita(String abogado, String fecha, String hora);
 	
 	/**
-	 * Devuelve una Conjunto con todos los abogados existentes en la agenda. Si no existen abogados devuelve un conjunto vacío.
+	 * Devuelve una Conjunto con todos los abogados existentes en la agenda. Si no existen abogados devuelve un conjunto vacï¿½o.
 	 * 
-	 * Precondición:
+	 * Precondiciï¿½n:
 	 * 		inicializada
 	 * 
-	 * Parámetros:
+	 * Parï¿½metros:
 	 * 		@return conjunto de los nombres de todos los abogados existentes en la estructura.
 	 * 
 	 * */	
@@ -119,14 +119,16 @@ public interface AgendaCitasTDA {
 	
 	/**
 	 * Devuelve una cola con todos las citas que posee ese abogado en esa fecha ordenado por horario de las citas. 
-	 * Si no existe el abogado o la fecha devuelve una cola vacía.
+	 * Si no existe el abogado o la fecha devuelve una cola vacï¿½a.
 	 * 
-	 * Precondición:
+	 * Precondiciï¿½n:
 	 * 		inicializada
 	 * 
-	 * Parámetros: 
+	 * Parï¿½metros: 
 	 * 		@param abogado 
 	 * 		@param fecha
 	 * */
 	public ColaTDA turnos (String abogado, String fecha);
+	
+	public void mostrarAgendas();
 }

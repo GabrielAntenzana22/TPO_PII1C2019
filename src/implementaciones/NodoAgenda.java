@@ -5,7 +5,7 @@ package implementaciones;
 public class NodoAgenda {
 
 	String abogado;
-	NodoDia primaraFecha;
+	NodoDia primeraFecha;
 	NodoAgenda sigMedico;
 	
 	
@@ -16,10 +16,10 @@ public class NodoAgenda {
 		this.abogado = abogado;
 	}
 	public NodoDia getPrimaraFecha() {
-		return primaraFecha;
+		return primeraFecha;
 	}
 	public void setPrimaraFecha(NodoDia primaraFecha) {
-		this.primaraFecha = primaraFecha;
+		this.primeraFecha = primaraFecha;
 	}
 	public NodoAgenda getSigMedico() {
 		return sigMedico;
