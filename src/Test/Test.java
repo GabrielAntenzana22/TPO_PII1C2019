@@ -7,7 +7,9 @@ import java.util.Date;
 import algoritmos.IAlgoritmo;
 import implementaciones.AgendaCitas;
 import implementaciones.Algoritmos;
+import implementaciones.ArbolCitas;
 import tdas.AgendaCitasTDA;
+import tdas.ArbolCitasTDA;
 import tdas.ConjuntoTDA;
 
 public class Test {
@@ -16,19 +18,27 @@ public class Test {
 		// TODO Auto-generated method stub
         AgendaCitasTDA act = new AgendaCitas();
         act.inicializar();
-        act.agregarNuevoDia("Juan", "Lunes", "1996/08/17");
-        act.agregarNuevoDia("Juan", "Lunes", "1996/08/18");
-        act.agregarNuevoDia("Juana", "Lunes", "1997/08/17");
-        act.agregarNuevoDia("Juana", "Lunes", "1997/08/16");
-        act.agregarNuevoDia("Jose", "Lunes", "1998/08/17");
-        act.agregarNuevoDia("Kevin", "Lunes", "1999/08/17");
-        act.agregarNuevoDia("Kevin", "Lunes", "1999/08/15");
-        act.eliminarFecha("Juan", "1996/08/17");
-        act.eliminarFecha("Juan", "1996/08/18");
-        act.eliminarFecha("Juana", "1997/08/16");
-        act.eliminarFecha("Kevin", "1999/08/15");
-        act.mostrarAgendas();
+        ArbolCitasTDA arbol = new ArbolCitas();
+        arbol.inicializar();
+        arbol.agregar("05:00", "K");
+        arbol.agregar("06:00", "K");
+        arbol.agregar("04:00", "K");
         
+        inOrder(arbol);
+        System.out.println(arbol.hora());
+        System.out.println(arbol.cliente());
+        System.out.println(arbol.hijoDerecho().hora());
+        System.out.println(arbol.hijoIzquierdo().hora());
 	}
+
+	private static void inOrder(ArbolCitasTDA arbol) {
+		// TODO Auto-generated method stub
+		if (!arbol.arbolVacio()){
+			inOrder(arbol.hijoIzquierdo()); 
+			System.out.println(arbol.hora()+" "+arbol.cliente()); 
+			inOrder(arbol.hijoDerecho());
+			}
+	}
+
     
 }
