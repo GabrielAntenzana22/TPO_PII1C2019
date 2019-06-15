@@ -103,12 +103,63 @@ public class AgendaCitas implements AgendaCitasTDA {
 	@Override
 	public void eliminarAbogado(String abogado) {
 		// TODO Auto-generated method stub
+		if(primero.abogado==abogado) {
+			primero=primero.sigMedico;
+		}else {
+			NodoAgenda auxPost = primero;
+			NodoAgenda auxAnt = primero;
+		    while(auxPost!=null) {
+			  if(auxPost.abogado==abogado) {
+				 auxAnt.sigMedico=auxPost.sigMedico;
+				 break;
+			  }else {
+				auxAnt=auxPost;
+				auxPost=auxPost.sigMedico;
+			  }
+		   }
+	   }
 		
 	}
 
 	@Override
 	public void eliminarFecha(String abogado, String fecha) {
 		// TODO Auto-generated method stub
+		NodoAgenda auxPost = primero;
+		NodoAgenda auxAnt = primero;
+		while(auxPost!=null) {                                 //Buscar posicion correcta de abogado
+		   if(auxPost.abogado==abogado) {
+			  NodoDia auxDiaPost = auxPost.primeraFecha;
+			  NodoDia auxDiaAnt = auxPost.primeraFecha;
+			  while(auxDiaPost!=null ) {                       //Buscar Posicion correcta de Fecha
+				  if(auxDiaPost.fecha==fecha) {           
+					  if(auxDiaPost.siguienteFecha==null) {
+						  if(auxDiaPost==auxDiaAnt) {          //Cuando el Abogado tiene una sola Fecha
+						     this.eliminarAbogado(abogado);    //Se elimina el Abogado directamente 
+						     break;
+						  }else {                              //Cuando la fecha indicada se ubica en el ultimo nodo
+							  auxDiaAnt.siguienteFecha=auxDiaPost.siguienteFecha;  //Se elimina el ultimo Nodo
+							  break;
+						  }
+					  }
+					  if(auxDiaAnt.siguienteFecha==auxDiaPost) {   //Si la fecha queda en el Nodo Intermedio
+					      auxDiaAnt.siguienteFecha=auxDiaPost.siguienteFecha;
+					      break;
+					  }
+					  if(auxDiaAnt==auxDiaPost) {                  //Si la fecha queda en el primer Nodo
+						  auxPost.primeraFecha=auxDiaPost.siguienteFecha;
+						  break;
+					  }
+				  }else {
+					  auxDiaAnt=auxDiaPost;
+					  auxDiaPost=auxDiaPost.siguienteFecha;
+				  }
+			  }
+			  break;
+		   }else {
+		     auxAnt=auxPost;
+		     auxPost=auxPost.sigMedico;
+		   }
+		}
 		
 	}
 
@@ -133,7 +184,14 @@ public class AgendaCitas implements AgendaCitasTDA {
 	@Override
 	public ConjuntoTDA abogados() {
 		// TODO Auto-generated method stub
-		return null;
+		ConjuntoTDA resultado = new Conjunto();
+		resultado.inicializar();
+		NodoAgenda aux = primero;
+		while(aux!=null){
+			resultado.agregar(aux.abogado);
+			aux=aux.sigMedico;
+		}
+		return resultado;
 	}
 
 	@Override
