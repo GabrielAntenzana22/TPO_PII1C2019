@@ -6,6 +6,8 @@ import java.util.Date;
 import java.text.SimpleDateFormat;
 
 import tdas.AgendaCitasTDA;
+import tdas.ArbolCitasTDA;
+import tdas.ColaPrioridadTDA;
 import tdas.ColaTDA;
 import tdas.ConjuntoTDA;
 
@@ -30,7 +32,8 @@ public class AgendaCitas implements AgendaCitasTDA {
 			auxDia.dia=dia;
 			auxDia.fecha=fecha;
 			auxDia.siguienteFecha=null;
-			auxDia.turnos=null;
+			auxDia.turnos= new ArbolCitas();
+			auxDia.turnos.inicializar();
 			primero=auxAgenda;
 			primero.primeraFecha=auxDia;
 		}else{
@@ -38,7 +41,8 @@ public class AgendaCitas implements AgendaCitasTDA {
 			auxDia.dia=dia;
 			auxDia.fecha=fecha;
 			auxDia.siguienteFecha=null;
-			auxDia.turnos=null;
+			auxDia.turnos= new ArbolCitas();
+			auxDia.turnos.inicializar();
 			NodoAgenda aux = primero;
 			while(aux!=null) {    //Buscar Posicion de abogado
 				if(aux.abogado!=abogado){
@@ -97,7 +101,22 @@ public class AgendaCitas implements AgendaCitasTDA {
 	@Override
 	public void agregarNuevaCita(String abogado, String fecha, String hora, String cliente) {
 		// TODO Auto-generated method stub
-		
+		NodoAgenda auxAbogado = primero;
+		while(auxAbogado!=null) {
+			if(auxAbogado.abogado==abogado) {
+				NodoDia auxDia = auxAbogado.primeraFecha;
+				while(auxDia!=null) {
+					if(auxDia.fecha==fecha) {
+						    ArbolCitasTDA auxArbol = auxDia.turnos ;
+							auxArbol.agregar(hora, cliente);
+							break;
+					}
+					auxDia=auxDia.siguienteFecha;
+				}
+				break;
+			}
+			auxAbogado=auxAbogado.sigMedico;
+		}
 	}
 
 	@Override
@@ -166,20 +185,100 @@ public class AgendaCitas implements AgendaCitasTDA {
 	@Override
 	public void eliminarCita(String abogado, String fecha, String hora, String cliente) {
 		// TODO Auto-generated method stub
-		
+		NodoAgenda auxAbogado = primero;
+		while(auxAbogado!=null) {
+			if(auxAbogado.abogado==abogado) {
+				NodoDia auxDia = auxAbogado.primeraFecha;
+				while(auxDia!=null) {
+					if(auxDia.fecha==fecha) {
+					   ArbolCitasTDA auxArbol = auxDia.turnos;
+					   auxArbol.eliminar(hora, cliente);
+					   break;
+					}					
+					auxDia=auxDia.siguienteFecha;
+				}
+				break;
+			}
+			auxAbogado=auxAbogado.sigMedico;
+		}
 	}
 
 	@Override
 	public boolean existeCita(String abogado, String fecha, String hora) {
 		// TODO Auto-generated method stub
+		NodoAgenda auxAbogado = primero;
+		while(auxAbogado!=null) {
+			if(auxAbogado.abogado==abogado) {
+				NodoDia auxDia = auxAbogado.primeraFecha;
+				while(auxDia!=null) {
+					if(auxDia.fecha==fecha) {
+					   ArbolCitasTDA auxArbol = auxDia.turnos;
+					   return existeCitaEnArbol(auxArbol, hora);
+					}					
+					auxDia=auxDia.siguienteFecha;
+				}
+			}
+			auxAbogado=auxAbogado.sigMedico;
+		}
 		return false;
+	}
+	private boolean existeCitaEnArbol (ArbolCitasTDA arbol, String hora) {
+		if(arbol.arbolVacio()) {
+			return false;
+		}else if(arbol.hora()==hora) {
+			return true;
+		}else if(horaMasTemprana(hora,arbol.hora())) {
+			return this.existeCitaEnArbol(arbol.hijoIzquierdo(), hora);
+		}else {
+			return this.existeCitaEnArbol(arbol.hijoDerecho(), hora);
+		}
+	}
+	private boolean horaMasTemprana(String hora1, String hora2) {
+		if((int)hora1.charAt(0)<(int)hora2.charAt(0)) {
+			return true;
+		}else {
+			if((int)hora1.charAt(0)==(int)hora2.charAt(0)&&(int)hora1.charAt(1)<(int)hora2.charAt(1)) {
+				return true;
+			}else {
+				if((int)hora1.charAt(0)==(int)hora2.charAt(0)&&(int)hora1.charAt(1)==(int)hora2.charAt(1)&&(int)hora1.charAt(3)<(int)hora2.charAt(3)) {
+				   return true;
+				}else {
+					return false;
+				}
+			}
+		}
+		
 	}
 
 	@Override
 	public String clienteEnCita(String abogado, String fecha, String hora) {
 		// TODO Auto-generated method stub
-		return null;
+		NodoAgenda auxAbogado = primero;
+		while(auxAbogado!=null) {
+			if(auxAbogado.abogado==abogado) {
+				NodoDia auxDia = auxAbogado.primeraFecha;
+				while(auxDia!=null) {
+					if(auxDia.fecha==fecha) {
+					   ArbolCitasTDA auxArbol = auxDia.turnos;
+					   return clienteEnArbol(auxArbol,hora);
+					}					
+					auxDia=auxDia.siguienteFecha;
+				}
+			}
+			auxAbogado=auxAbogado.sigMedico;
+		}
+		return null;      //Nunca se llega a null por precondicion : Existe abogado, fehca y hora
 	}
+	private String clienteEnArbol(ArbolCitasTDA arbol, String hora) {
+		if(arbol.hora()==hora) {
+			return arbol.cliente();
+		}else if(horaMasTemprana(hora,arbol.hora())) {
+			return this.clienteEnArbol(arbol.hijoIzquierdo(), hora);
+		}else {
+			return this.clienteEnArbol(arbol.hijoDerecho(), hora);
+		}
+	}
+	
 
 	@Override
 	public ConjuntoTDA abogados() {
@@ -197,7 +296,41 @@ public class AgendaCitas implements AgendaCitasTDA {
 	@Override
 	public ColaTDA turnos(String abogado, String fecha) {
 		// TODO Auto-generated method stub
-		return null;
+		ColaTDA resultado = new Cola();
+		resultado.inicilizar();
+		NodoAgenda auxAbogado = primero;
+		while(auxAbogado!=null) {
+			if(auxAbogado.abogado==abogado) {
+				NodoDia auxDia = auxAbogado.primeraFecha;
+				while(auxDia!=null) {
+					if(auxDia.fecha==fecha) {
+					   ArbolCitasTDA auxArbol = auxDia.turnos;
+					   resultado = acolarHoras(auxArbol);
+					}					
+					auxDia=auxDia.siguienteFecha;
+				}
+			}
+			auxAbogado=auxAbogado.sigMedico;
+		}
+		      
+		return resultado;
+	}
+	private ColaTDA acolarHoras(ArbolCitasTDA arbol) {
+		ColaTDA resultado = new Cola();
+		resultado.inicilizar();
+		if (!arbol.arbolVacio()){
+			resultado = concatenar(resultado,acolarHoras(arbol.hijoIzquierdo()));
+			resultado.acolar(arbol.hora());
+			resultado = concatenar(resultado,acolarHoras(arbol.hijoDerecho()));
+		}
+		return resultado;
+	}
+	private ColaTDA concatenar(ColaTDA a,ColaTDA b) {
+		while(!b.colaVacia()) {
+			a.acolar(b.primero());
+			b.desacolar();
+		}
+		return a;
 	}
 	
 	public void mostrarAgendas() {
@@ -207,10 +340,24 @@ public class AgendaCitas implements AgendaCitasTDA {
 			NodoDia auxd = aux.primeraFecha;
 			while(auxd!=null) {
 			   System.out.println(auxd.dia+" "+auxd.fecha);
+			   ArbolCitasTDA auxArbol = auxd.turnos;
+			   if(auxArbol!=null) {
+				 System.out.println("Hora  Cliente");
+			     inOrder(auxArbol);
+			   }
 			   auxd=auxd.siguienteFecha;
 			}
+			System.out.println();
 			aux=aux.sigMedico;
 		}
+	}
+	private void inOrder(ArbolCitasTDA arbol) {
+		// TODO Auto-generated method stub
+		if (!arbol.arbolVacio()){
+			inOrder(arbol.hijoIzquierdo()); 
+			System.out.println(arbol.hora()+" "+arbol.cliente()); 
+			inOrder(arbol.hijoDerecho());
+			}
 	}
 
 }

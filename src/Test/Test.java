@@ -8,8 +8,10 @@ import algoritmos.IAlgoritmo;
 import implementaciones.AgendaCitas;
 import implementaciones.Algoritmos;
 import implementaciones.ArbolCitas;
+import implementaciones.Cola;
 import tdas.AgendaCitasTDA;
 import tdas.ArbolCitasTDA;
+import tdas.ColaTDA;
 import tdas.ConjuntoTDA;
 
 public class Test {
@@ -20,25 +22,22 @@ public class Test {
         act.inicializar();
         ArbolCitasTDA arbol = new ArbolCitas();
         arbol.inicializar();
-        arbol.agregar("05:00", "K");
-        arbol.agregar("06:00", "K");
-        arbol.agregar("04:00", "K");
+        act.agregarNuevoDia("Juan", "Lunes", "2019/01/01");
+        act.agregarNuevoDia("Juan", "Lunes", "2019/01/02");
+        act.agregarNuevoDia("Jose", "Lunes", "2019/01/01");
+        act.agregarNuevoDia("Jose", "Lunes", "2019/01/02");
+        act.agregarNuevaCita("Juan", "2019/01/01", "22:00", "A");
+        act.agregarNuevaCita("Juan", "2019/01/01", "24:00", "B");
+        act.agregarNuevaCita("Juan", "2019/01/01", "18:30", "C");
+        act.agregarNuevaCita("Juan", "2019/01/01", "08:00", "D");
+        act.agregarNuevaCita("Juan", "2019/01/01", "05:00", "e");
+        act.agregarNuevaCita("Juan", "2019/01/01", "08:30", "i");
+        act.agregarNuevaCita("Juan", "2019/01/01", "17:00", "v");
+        act.agregarNuevaCita("Juan", "2019/01/01", "12:00", "n");
         
-        inOrder(arbol);
-        System.out.println(arbol.hora());
-        System.out.println(arbol.cliente());
-        System.out.println(arbol.hijoDerecho().hora());
-        System.out.println(arbol.hijoIzquierdo().hora());
+        
+        act.mostrarAgendas();      
+        
 	}
-
-	private static void inOrder(ArbolCitasTDA arbol) {
-		// TODO Auto-generated method stub
-		if (!arbol.arbolVacio()){
-			inOrder(arbol.hijoIzquierdo()); 
-			System.out.println(arbol.hora()+" "+arbol.cliente()); 
-			inOrder(arbol.hijoDerecho());
-			}
-	}
-
-    
+	
 }
