@@ -359,5 +359,22 @@ public class AgendaCitas implements AgendaCitasTDA {
 			inOrder(arbol.hijoDerecho());
 			}
 	}
-
+   
+	public ColaTDA fechasDelAbogado (String abogado) {
+		ColaTDA resultado = new Cola();
+		resultado.inicilizar();
+		NodoAgenda auxAgenda = primero;
+		while(auxAgenda!=null) {
+			if(auxAgenda.abogado==abogado) {
+			    NodoDia auxDia = auxAgenda.primeraFecha;
+			    while(auxDia!=null) {
+			    	resultado.acolar(auxDia.fecha);
+			    	auxDia=auxDia.siguienteFecha;
+			    }
+				
+			}
+			auxAgenda = auxAgenda.sigMedico;
+		}
+		return resultado;
+	}
 }
