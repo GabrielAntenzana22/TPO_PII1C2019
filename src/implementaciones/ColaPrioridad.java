@@ -20,6 +20,7 @@ public class ColaPrioridad implements ColaPrioridadTDA{
 		// desplaza a derecha los elementos de la cola mientras
 		// estos tengan mayor o igual prioridad que la de x
 		int j;
+		prioridad = prioridad.replaceAll(":", "");
 		for (j = indice ; j>0 && Integer.valueOf(prioridades[j -1]) >= Integer.valueOf(prioridad); j-- ){
 			elementos[j] = elementos[j -1];
 			prioridades[j] = prioridades[j -1];

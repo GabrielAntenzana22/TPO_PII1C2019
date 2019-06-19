@@ -116,7 +116,7 @@ public class Algoritmos implements IAlgoritmo {
 		String [] horas =  {"08:00", "08:30","09:00","09:30","10:00","10:30","11:00","11:30","12:30","13:00","13:30","14:00","14:30","15:00","15:30","16:00","16:30","17:00","17:30","18:00"}; 
 		while(!listaAbogados.conjuntoVacio()) {
 			String abogado = listaAbogados.elegir();
-			for(int i=0; i>horas.length;i++) {
+			for(int i=0; i<horas.length;i++) {
 				if(!agenda.existeCita(abogado, fecha, horas[i])) {
 					horariosLibresAbogados.acolar(listaAbogados.elegir(), horas[i]);
 				}
