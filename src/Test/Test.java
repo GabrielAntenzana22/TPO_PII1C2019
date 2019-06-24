@@ -40,7 +40,10 @@ public class Test {
         act.agregarNuevaCita("Jose", "2019/01/04","13:30", "I");
         act.agregarNuevaCita("Jose", "2019/01/04","14:00", "A");
         act.agregarNuevaCita("Kevin", "2019/01/05","14:00", "A");
-        //act.mostrarAgendas();  
+        
+        act.mostrarAgendas();  
+        
+        System.out.println(method.abogadoUltimaVez(act, "A"));
         
        // System.out.println(method.abogadoUltimaVez(act, "A"));
         
@@ -54,13 +57,14 @@ public class Test {
         }
         */
         
-        ColaPrioridadTDA cola =  method.libresTotal(act, "2019/01/01");
+        /*ColaPrioridadTDA cola =  method.libresTotal(act, "2019/01/01");
         
         while(!cola.colaVacia()) {
         	System.out.println(cola.primero() + "  " + cola.prioridad());
         	cola.dasacolar();
-        }
-     
+        }*/
+        
+        
 	}
 	
 }

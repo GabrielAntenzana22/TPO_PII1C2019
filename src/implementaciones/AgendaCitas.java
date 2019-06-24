@@ -360,18 +360,17 @@ public class AgendaCitas implements AgendaCitasTDA {
 			}
 	}
    
-	public ColaTDA fechasDelAbogado (String abogado) {
-		ColaTDA resultado = new Cola();
-		resultado.inicilizar();
+	public ConjuntoTDA fechas (String abogado) {
+		ConjuntoTDA resultado = new Conjunto();
+		resultado.inicializar();
 		NodoAgenda auxAgenda = primero;
 		while(auxAgenda!=null) {
 			if(auxAgenda.abogado==abogado) {
 			    NodoDia auxDia = auxAgenda.primeraFecha;
 			    while(auxDia!=null) {
-			    	resultado.acolar(auxDia.fecha);
+			    	resultado.agregar(auxDia.fecha);
 			    	auxDia=auxDia.siguienteFecha;
 			    }
-				
 			}
 			auxAgenda = auxAgenda.sigMedico;
 		}

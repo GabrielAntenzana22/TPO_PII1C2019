@@ -27,19 +27,46 @@ public class Algoritmos implements IAlgoritmo {
 		ConjuntoTDA aux = agenda.abogados();
 		ConjuntoTDA resultado = new Conjunto();
 		resultado.inicializar();
-		String abogado;
+		String abogado, fecha;
+		ColaPrioridadTDA resultadoEnCola = new ColaPrioridad();
+		resultadoEnCola.inicializar();
 		while(!aux.conjuntoVacio()) {
+			int citasTotales = 0;
 			abogado=aux.elegir();
-			ColaTDA auxFechas = agenda.fechasDelAbogado(abogado);
-			while(!auxFechas.colaVacia()) {
-				if((fechaPosterior(fechaDesde,auxFechas.primero()) && fechaPosterior(auxFechas.primero(),fechaHasta)) || (auxFechas.primero()==fechaDesde || auxFechas.primero()==fechaHasta)){
-					if(!agenda.turnos(abogado, auxFechas.primero()).colaVacia()) {
-					   resultado.agregar(abogado);
+			ConjuntoTDA auxFechas = agenda.fechas(abogado);
+			while(!auxFechas.conjuntoVacio()) {
+				fecha = auxFechas.elegir();
+				if((fechaPosterior(fechaDesde,fecha) && fechaPosterior(fecha,fechaHasta)) || (fecha ==fechaDesde || fecha==fechaHasta)){
+					if(!agenda.turnos(abogado, fecha).colaVacia()) {
+					   citasTotales = citasTotales + cantidadDeCitasDeLaFecha(agenda, abogado, fecha);
 					}
 				}
-				auxFechas.desacolar();
+				auxFechas.sacar(fecha);
+			}
+			if(!resultadoEnCola.colaVacia()) {
+				if(citasTotales>Integer.valueOf(resultadoEnCola.prioridad())) {
+					resultadoEnCola.inicializar();
+					resultadoEnCola.acolar(abogado, String.valueOf(citasTotales));
+				}else if(citasTotales==Integer.valueOf(resultadoEnCola.prioridad())) {
+					resultadoEnCola.acolar(abogado, String.valueOf(citasTotales));
+				}
+			}else {
+				resultadoEnCola.acolar(abogado, String.valueOf(citasTotales));
 			}
 			aux.sacar(abogado);
+		}
+		while(!resultadoEnCola.colaVacia()) {
+			resultado.agregar(resultadoEnCola.primero());
+			resultadoEnCola.dasacolar();
+		}
+		return resultado;
+	}
+	private int cantidadDeCitasDeLaFecha(AgendaCitasTDA agenda, String abogado, String fecha) {
+		int resultado = 0;
+		ColaTDA auxTurnos = agenda.turnos(abogado,fecha);
+		while(!auxTurnos.colaVacia()) {
+			resultado++;
+			auxTurnos.desacolar();
 		}
 		return resultado;
 	}
@@ -61,18 +88,19 @@ public class Algoritmos implements IAlgoritmo {
 		ConjuntoTDA auxAbogados = agenda.abogados();
 		while(!auxAbogados.conjuntoVacio()) {
 			abogado = auxAbogados.elegir();
-			ColaTDA auxFechas = agenda.fechasDelAbogado(abogado);
-			while(!auxFechas.colaVacia()) {
-				ColaTDA auxHorarios = agenda.turnos(abogado, auxFechas.primero());
+			ConjuntoTDA auxFechas = agenda.fechas(abogado);
+			while(!auxFechas.conjuntoVacio()) {
+				String fecha = auxFechas.elegir();
+				ColaTDA auxHorarios = agenda.turnos(abogado, fecha);
 				while(!auxHorarios.colaVacia()) {
-					if(agenda.clienteEnCita(abogado, auxFechas.primero(), auxHorarios.primero())==cliente && fechaPosterior(ultimaFecha,auxFechas.primero()) && horaMasTemprana(ultimoHorario, auxHorarios.primero())) {
+					if(agenda.clienteEnCita(abogado, fecha, auxHorarios.primero())==cliente && fechaPosterior(ultimaFecha,fecha) && horaMasTemprana(ultimoHorario, auxHorarios.primero())) {
 						resultado = abogado;
-						ultimaFecha = auxFechas.primero();
+						ultimaFecha = fecha;
 						ultimoHorario = auxHorarios.primero();
 					}
 					auxHorarios.desacolar();
 				}
-				auxFechas.desacolar();
+				auxFechas.sacar(fecha);
 			}
 			auxAbogados.sacar(abogado);
 		}
