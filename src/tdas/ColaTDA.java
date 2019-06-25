@@ -10,7 +10,7 @@ public interface ColaTDA {
 	/**
 	 * Si precondiciones
 	 * */
-	public void inicilizar();
+	public void inicializar();
 	/**
 	 * Inicializada
 	 * */

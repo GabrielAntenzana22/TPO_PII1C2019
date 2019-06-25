@@ -30,7 +30,7 @@ public interface IAlgoritmo {
 	/**
 	 * Obtener todas las citas de un abogado determinado durante una semana determinada.
 	 * 
-	 * Se pasa la fecha correspondiente al Lunes de la mensionada semana.
+	 * Se pasa la fecha correspondiente al Lunes de la mencionada semana.
 	 * 
 	 * Debe devolver un arreglo conteniendo el nombre del d�a, la hora y el cliente ordenado por
 	 * d�a de la semana y horario.  
@@ -48,7 +48,7 @@ public interface IAlgoritmo {
 	/**
 	 * Obtener todas los horarios libres de todos los abogados para una semana determinada.
 	 * 
-	 * Se pasa la fecha correspondiente al Lunes de la mensionada semana.
+	 * Se pasa la fecha correspondiente al Lunes de la mencionada semana.
 	 * 
 	 * Devolver una cola con prioridad que tenga como valor el nombre del abogado y como prioridad el horario
 	 * */

@@ -131,6 +131,10 @@ public interface AgendaCitasTDA {
 	 * */
 	public ColaTDA turnos (String abogado, String fecha);
 	
+	
 	public void mostrarAgendas();
+	
 	public ConjuntoTDA fechas (String abogado);
+	
+	public ColaTDA fechasConCola (String abogado);
 }

@@ -2,10 +2,12 @@ package implementaciones;
 
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 import algoritmos.IAlgoritmo;
 import tdas.AgendaCitasTDA;
+import tdas.ArbolCitasTDA;
 import tdas.ColaPrioridadTDA;
 import tdas.ColaTDA;
 import tdas.ConjuntoTDA;
@@ -14,7 +16,7 @@ public class Algoritmos implements IAlgoritmo {
 
 	@Override
 	public boolean disponible(AgendaCitasTDA agenda, String abogado, String fecha, String hora) {
-		// TODO Auto-generated method stub
+		
 		if(agenda.existeCita(abogado, fecha, hora)) 
 			return false;
 		else
@@ -123,16 +125,100 @@ public class Algoritmos implements IAlgoritmo {
 		
 	}
 
+	//Devuelve las citas ordenadas por fecha y hora de menor a mayor
 	@Override
 	public String[][] obtenerCitas(AgendaCitasTDA agenda, String abogado, String fecha) {
-		// TODO Auto-generated method stub
-		return null;
+		
+		String [][] citas =new String[100][100];
+		int indiceFecha = 0;
+		
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
+					
+		//Seteo las fechas principio y fin donde voy a buscar los turnos
+		Calendar auxCal = Calendar.getInstance();
+		auxCal.setTime(sdf.parse(fecha, new ParsePosition(0)));
+		
+		Calendar fechaSigLunes = getFechaAUnaSemana(fecha);
+		
+		//Sale del while cuando las fechas son iguales
+		while (auxCal.compareTo(fechaSigLunes)!=0) {
+		
+			//Obtengo los turnos para la fecha en la que estoy
+			String auxFecha = sdf.format(auxCal.getTime());
+			ColaTDA turnos = agenda.turnos(abogado, auxFecha);
+
+			int indiceHora = 0;
+			while (!turnos.colaVacia()) {
+				String auxTurno = turnos.primero();
+				turnos.desacolar();
+				
+				//Desacola en orden asi que los meto tal cual en el array
+				citas[indiceFecha][indiceHora] = "DIA: "+auxFecha+" - HORA: "+auxTurno+" - CLIENTE: "
+						+agenda.clienteEnCita(abogado,auxFecha,auxTurno);
+				indiceHora++;
+			}
+			indiceFecha++;
+			auxCal.add(Calendar.DAY_OF_MONTH, 1);
+			
+		}		
+
+		return citas;
 	}
 
+	//Devuelve la fecha en Date sumandole 7 dias
+	private Calendar getFechaAUnaSemana (String fecha) {
+		
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
+		Calendar c = Calendar.getInstance();
+		c.setTime(sdf.parse(fecha, new ParsePosition(0)));
+		c.add(Calendar.DATE, 7); // Adding 5 days
+		return c;
+	}
+	
+	//Devuelve las reuniones ordenadas primero por abogado y luego por fecha y hora de menor a mayor
 	@Override
 	public String[][] conQuienSeReunio(AgendaCitasTDA agenda, String cliente) {
-		// TODO Auto-generated method stub
-		return null;
+		
+		String [][] reuniones =new String[100][100];
+		int indiceAbogado = 0;
+		
+		ConjuntoTDA abogados = agenda.abogados();
+		
+		//Recorro todos los abogados
+		while (!abogados.conjuntoVacio()) {
+			
+			//Elijo un abogado
+ 			String auxAbogado = abogados.elegir();
+			abogados.sacar(auxAbogado);			
+			ColaTDA fechas = agenda.fechasConCola(auxAbogado);
+			
+			int indiceTurno = 0;
+			//Desacolo una fecha
+			while (!fechas.colaVacia()) {
+				String auxFecha = fechas.primero();
+				fechas.desacolar();
+				
+				ColaTDA turnos = agenda.turnos(auxAbogado, auxFecha);			
+
+				while (!turnos.colaVacia()) {
+					//Desacolo un turno
+					String auxTurno = turnos.primero();
+					turnos.desacolar();
+					
+					//Solo lo meto en el array si corresponde al mismo cliente
+					if (agenda.clienteEnCita(auxAbogado,auxFecha,auxTurno).equalsIgnoreCase(cliente)) {
+						//Desacola en orden asi que los meto tal cual en el array
+						reuniones[indiceAbogado][indiceTurno] = "CLIENTE: "+cliente+" - ABOGADO: "+auxAbogado+
+								" - DIA: "+auxFecha+" - HORA: "+auxTurno;						
+						indiceTurno++;
+					}
+				}
+			}
+			indiceAbogado++;
+
+		}
+		
+		return reuniones;
 	}
 
 	@Override

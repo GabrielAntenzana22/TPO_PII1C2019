@@ -7,13 +7,13 @@ public class ArbolCitas implements ArbolCitasTDA {
 	
 	@Override
 	public void inicializar() {
-		// TODO Auto-generated method stub
 		raiz=null;
 	}
 
 	@Override
 	public void agregar(String hora, String cliente) {
-		// TODO Auto-generated method stub
+		
+		//Si la raiz es null el arbol esta vacio, creo todo 
 		if(raiz==null) {
 			raiz = new NodoArbol();
 			raiz.hora = hora;
@@ -22,12 +22,19 @@ public class ArbolCitas implements ArbolCitasTDA {
 			raiz.hijoIzq.inicializar();
 			raiz.hijoDer = new ArbolCitas();
 			raiz.hijoDer.inicializar();
+		
+		//La hora que inserto es mas temprano que la raiz
 		} else if(horaMasTemprana(hora, raiz.hora)) {
 			raiz.hijoIzq.agregar(hora,cliente);
+			
+		//La hora que inserto es mas tarde que la raiz
 		} else if(horaMasTemprana(raiz.hora, hora)) {
 			raiz.hijoDer.agregar(hora, cliente);
 		}
+		//Si la hora es la misma no hago nada
 	}
+	
+	//Devuelve true si hora1 es mas temprano que hora2
 	private boolean horaMasTemprana(String hora1, String hora2) {
 		if((int)hora1.charAt(0)<(int)hora2.charAt(0)) {
 			return true;

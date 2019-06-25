@@ -6,7 +6,7 @@ public class Cola implements ColaTDA {
 	int indice;
 	
 	@Override
-	public void inicilizar() {
+	public void inicializar() {
 		a = new String [100];
 		indice = 0;
 		
