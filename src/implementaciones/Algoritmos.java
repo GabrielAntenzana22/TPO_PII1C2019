@@ -227,17 +227,45 @@ public class Algoritmos implements IAlgoritmo {
 		ConjuntoTDA listaAbogados = agenda.abogados();
 		ColaPrioridadTDA horariosLibresAbogados = new ColaPrioridad();
 		horariosLibresAbogados.inicializar();
-		String [] horas =  {"08:00", "08:30","09:00","09:30","10:00","10:30","11:00","11:30","12:30","13:00","13:30","14:00","14:30","15:00","15:30","16:00","16:30","17:00","17:30","18:00"}; 
+		String [] horas =  {"00:00","00:30","01:00","01:30","02:00","02:30","03:00","03:30","04:00","04:30",
+	            "05:00","05:30","06:00","06:30","07:00","07:30","08:00", "08:30","09:00","09:30",
+	            "10:00","10:30","11:00","11:30","12:30","13:00","13:30","14:00","14:30","15:00",
+	            "15:30","16:00","16:30","17:00","17:30","18:00","18:30","19:00","19:30","20:00",
+	            "20:30","21:00","21:30","22:00","22:30","23:00","23:30"};
+		
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
+		
+		//Recorro todos los abogados
 		while(!listaAbogados.conjuntoVacio()) {
-			String abogado = listaAbogados.elegir();
-			for(int i=0; i<horas.length;i++) {
-				if(!agenda.existeCita(abogado, fecha, horas[i])) {
-					horariosLibresAbogados.acolar(listaAbogados.elegir(), horas[i]);
+			
+			//Elijo un abogado
+ 			String auxAbogado = listaAbogados.elegir();
+ 			listaAbogados.sacar(auxAbogado);	
+			
+			//Seteo las fechas principio y fin donde voy a buscar los turnos
+			Calendar auxCal = Calendar.getInstance();
+			auxCal.setTime(sdf.parse(fecha, new ParsePosition(0)));
+			
+			Calendar fechaSigLunes = getFechaAUnaSemana(fecha);
+			
+			//Sale del while cuando las fechas son iguales
+			while (auxCal.compareTo(fechaSigLunes)!=0) {
+				
+				//Recorro el array con las horas
+				for(int i=0; i<horas.length;i++) {
+					
+					//Obtengo los turnos para la fecha en la que estoy
+					String auxFecha = sdf.format(auxCal.getTime());					
+					if(!agenda.existeCita(auxAbogado, auxFecha, horas[i])) {
+						horariosLibresAbogados.acolar(auxAbogado, horas[i]);
+					}
+				
 				}
+				//Avanzo al siguiente dia de la semana
+				auxCal.add(Calendar.DAY_OF_MONTH, 1);
 			}
-			listaAbogados.sacar(abogado);
+		
 		}
-		// TODO Auto-generated method stub
 		return horariosLibresAbogados;
 	}
 
