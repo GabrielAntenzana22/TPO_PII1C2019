@@ -488,21 +488,5 @@ public class AgendaCitas implements AgendaCitasTDA {
 		return resultado;
 	}
 	
-	//Se crea este metodo para el uso en donde se requeira tener las fechas ordenadas
-	public ColaTDA fechasConCola (String abogado) {
-		ColaTDA resultado = new Cola();
-		resultado.inicializar();
-		NodoAgenda auxAgenda = primero;
-		while(auxAgenda!=null) {
-			if(auxAgenda.abogado.equalsIgnoreCase(abogado)) {
-			    NodoDia auxDia = auxAgenda.primeraFecha;
-			    while(auxDia!=null) {
-			    	resultado.acolar(auxDia.fecha);
-			    	auxDia=auxDia.siguienteFecha;
-			    }
-			}
-			auxAgenda = auxAgenda.sigMedico;
-		}
-		return resultado;
-	}
+
 }

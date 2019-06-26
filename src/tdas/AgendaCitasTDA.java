@@ -136,5 +136,4 @@ public interface AgendaCitasTDA {
 	
 	public ConjuntoTDA fechas (String abogado);
 	
-	public ColaTDA fechasConCola (String abogado);
 }

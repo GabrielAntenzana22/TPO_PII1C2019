@@ -20,7 +20,7 @@ import tdas.ConjuntoTDA;
 public class Test {
 
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
+
         AgendaCitasTDA act = new AgendaCitas();
         act.inicializar();
         IAlgoritmo method = new Algoritmos();

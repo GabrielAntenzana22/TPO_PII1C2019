@@ -2,8 +2,12 @@ package implementaciones;
 
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
 import algoritmos.IAlgoritmo;
 import tdas.AgendaCitasTDA;
@@ -17,7 +21,9 @@ public class Algoritmos implements IAlgoritmo {
 	@Override
 	public boolean disponible(AgendaCitasTDA agenda, String abogado, String fecha, String hora) {
 		
-		if(agenda.existeCita(abogado, fecha, hora)) 
+		ConjuntoTDA fechas = agenda.fechas(abogado);
+		
+		if(!fechas.pertenece(fecha) || agenda.existeCita(abogado, fecha, hora)) 
 			return false;
 		else
 			return true;
@@ -129,7 +135,6 @@ public class Algoritmos implements IAlgoritmo {
 	@Override
 	public String[][] obtenerCitas(AgendaCitasTDA agenda, String abogado, String fecha) {
 		
-		String [][] citas =new String[100][100];
 		int indiceFecha = 0;
 		
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
@@ -140,28 +145,35 @@ public class Algoritmos implements IAlgoritmo {
 		
 		Calendar fechaSigLunes = getFechaAUnaSemana(fecha);
 		
+		List<List<String>> auxAbogados = new ArrayList<List<String>>();
 		//Sale del while cuando las fechas son iguales
 		while (auxCal.compareTo(fechaSigLunes)!=0) {
 		
 			//Obtengo los turnos para la fecha en la que estoy
 			String auxFecha = sdf.format(auxCal.getTime());
 			ColaTDA turnos = agenda.turnos(abogado, auxFecha);
-
+			
+			List<String> auxAbogado = new ArrayList<String>();
+			
 			int indiceHora = 0;
 			while (!turnos.colaVacia()) {
 				String auxTurno = turnos.primero();
 				turnos.desacolar();
-				
+
+				auxAbogado.add("DIA: "+auxFecha+" - HORA: "+auxTurno+" - CLIENTE: "	+agenda.clienteEnCita(abogado,auxFecha,auxTurno));
 				//Desacola en orden asi que los meto tal cual en el array
-				citas[indiceFecha][indiceHora] = "DIA: "+auxFecha+" - HORA: "+auxTurno+" - CLIENTE: "
-						+agenda.clienteEnCita(abogado,auxFecha,auxTurno);
+//				citas[indiceFecha][indiceHora] = "DIA: "+auxFecha+" - HORA: "+auxTurno+" - CLIENTE: "
+//						+agenda.clienteEnCita(abogado,auxFecha,auxTurno);
+				
 				indiceHora++;
 			}
 			indiceFecha++;
 			auxCal.add(Calendar.DAY_OF_MONTH, 1);
 			
 		}		
-
+		
+		
+		String [][] citas =new String[a][a];
 		return citas;
 	}
 
@@ -179,8 +191,9 @@ public class Algoritmos implements IAlgoritmo {
 	@Override
 	public String[][] conQuienSeReunio(AgendaCitasTDA agenda, String cliente) {
 		
-		String [][] reuniones =new String[100][100];
-		int indiceAbogado = 0;
+		String [][] reuniones =new String[1000][1000];
+		List <String> fechasOrdenadas = new ArrayList<String> ();
+		int indiceAbogado=0 , indiceFechaOrdenada = 0;
 		
 		ConjuntoTDA abogados = agenda.abogados();
 		
@@ -190,15 +203,23 @@ public class Algoritmos implements IAlgoritmo {
 			//Elijo un abogado
  			String auxAbogado = abogados.elegir();
 			abogados.sacar(auxAbogado);			
-			ColaTDA fechas = agenda.fechasConCola(auxAbogado);
+			ConjuntoTDA fechas = agenda.fechas(auxAbogado);
+			
+			while (!fechas.conjuntoVacio()){
+				String auxFecha = fechas.elegir();
+				fechas.sacar(auxFecha);
+				fechasOrdenadas.add(auxFecha);
+				indiceFechaOrdenada++;
+				
+			}
+			
+			Collections.sort(fechasOrdenadas);
 			
 			int indiceTurno = 0;
 			//Desacolo una fecha
-			while (!fechas.colaVacia()) {
-				String auxFecha = fechas.primero();
-				fechas.desacolar();
+			for (String fecha:fechasOrdenadas){
 				
-				ColaTDA turnos = agenda.turnos(auxAbogado, auxFecha);			
+				ColaTDA turnos = agenda.turnos(auxAbogado, fecha);			
 
 				while (!turnos.colaVacia()) {
 					//Desacolo un turno
@@ -206,10 +227,10 @@ public class Algoritmos implements IAlgoritmo {
 					turnos.desacolar();
 					
 					//Solo lo meto en el array si corresponde al mismo cliente
-					if (agenda.clienteEnCita(auxAbogado,auxFecha,auxTurno).equalsIgnoreCase(cliente)) {
+					if (agenda.clienteEnCita(auxAbogado,fecha,auxTurno).equalsIgnoreCase(cliente)) {
 						//Desacola en orden asi que los meto tal cual en el array
 						reuniones[indiceAbogado][indiceTurno] = "CLIENTE: "+cliente+" - ABOGADO: "+auxAbogado+
-								" - DIA: "+auxFecha+" - HORA: "+auxTurno;						
+								" - DIA: "+fecha+" - HORA: "+auxTurno;						
 						indiceTurno++;
 					}
 				}

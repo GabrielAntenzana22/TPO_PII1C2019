@@ -10,8 +10,8 @@ public class ColaPrioridad implements ColaPrioridadTDA{
 	@Override
 	public void inicializar() {
 		indice = 0;
-		elementos = new String [100];
-		prioridades = new String [100];
+		elementos = new String [1000];
+		prioridades = new String [1000];
 		
 	}
 

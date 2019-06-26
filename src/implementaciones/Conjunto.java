@@ -9,7 +9,7 @@ public class Conjunto implements ConjuntoTDA {
 	
 	public void inicializar() {
 		// TODO Auto-generated method stub
-		a=new String[100];
+		a=new String[1000];
 		cant = 0;
 	}
 
