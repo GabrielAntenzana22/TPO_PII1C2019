@@ -65,8 +65,11 @@ public class Algoritmos implements IAlgoritmo {
 			aux.sacar(abogado);
 		}
 		while(!resultadoEnCola.colaVacia()) {
-			resultado.agregar(resultadoEnCola.primero());
+			if(Integer.valueOf(resultadoEnCola.prioridad())!=0) {
+			    resultado.agregar(resultadoEnCola.primero());
+			}
 			resultadoEnCola.dasacolar();
+			
 		}
 		return resultado;
 	}

@@ -28,114 +28,117 @@ public class AlgoritmoTest {
 
 	@Test
 	public void testUnAbogadoNoExistenteNoEstaDisponible() {
-		// Operación
+		// Operaciï¿½n
 		boolean abogadoEstaDisponible = algoritmo.disponible(agenda, "un abogado no existente", "2019/01/01", "13:00");
 
-		// Validación
+		// Validaciï¿½n
 		Assert.assertFalse(abogadoEstaDisponible);
 	}
 
 	@Test
 	public void testUnAbogadoExistenteSinCitasEstaDisponible() {
-		// Inicialización
+		// Inicializaciï¿½n
 		agenda.agregarNuevoDia("un abogado", "martes", "2019/01/01");
 
-		// Operación
+		// Operaciï¿½n
 		boolean abogadoEstaDisponible = algoritmo.disponible(agenda, "un abogado", "2019/01/01", "13:00");
 
-		// Validación
+		// Validaciï¿½n
 		Assert.assertTrue(abogadoEstaDisponible);
 	}
 
 	@Test
 	public void testUnAbogadoExistenteSinDiaCreadoNoEstaDisponible() {
-		// Inicialización
+		// Inicializaciï¿½n
 		agenda.agregarNuevoDia("un abogado", "martes", "2019/01/01");
 
-		// Operación
+		// Operaciï¿½n
 		boolean abogadoEstaDisponible = algoritmo.disponible(agenda, "un abogado", "2019/01/02", "13:00");
 
-		// Validación
+		// Validaciï¿½n
 		Assert.assertFalse(abogadoEstaDisponible);
 	}
 
 	@Test
 	public void testUnAbogadoExistenteConCitaEseDiaYHorarioNoEstaDisponible() {
-		// Inicialización
+		// Inicializaciï¿½n
 		agenda.agregarNuevoDia("un abogado", "martes", "2019/01/01");
 		agenda.agregarNuevaCita("un abogado", "2019/01/01", "13:00", "un cliente");
 
-		// Operación
+		// Operaciï¿½n
 		boolean abogadoEstaDisponible = algoritmo.disponible(agenda, "un abogado", "2019/01/01", "13:00");
 
-		// Validación
+		// Validaciï¿½n
 		Assert.assertFalse(abogadoEstaDisponible);
 	}
 
 	@Test
 	public void testConjuntoVacioAbogadosConMasCitasCuandoNoHayAbogados() {
-		// Operación
+		// Operaciï¿½n
 		ConjuntoTDA abogadosConMasCitas = algoritmo.masCitas(agenda, "2019/01/01", "2019/01/31");
 
-		// Validación
+		// Validaciï¿½n
 		Assert.assertTrue(abogadosConMasCitas.conjuntoVacio());
 	}
 
 	@Test
 	public void testConjuntoVacioAbogadosConMasCitasCuandoNoHayAbogadosEnEseRangoDeFechas() {
-		// Inicialización
+		// Inicializaciï¿½n
 		agenda.agregarNuevoDia("un abogado", "martes", "2019/01/01");
 		agenda.agregarNuevaCita("un abogado", "2019/01/01", "12:00", "un cliente");
 		agenda.agregarNuevaCita("un abogado", "2019/01/01", "13:00", "otro cliente");
 
-		// Operación
+		// Operaciï¿½n
 		ConjuntoTDA abogadosConMasCitas = algoritmo.masCitas(agenda, "2019/01/02", "2019/01/31");
 
-		// Validación
+		// Validaciï¿½n
 		Assert.assertTrue(abogadosConMasCitas.conjuntoVacio());
 	}
 
 	@Test
 	public void testConjuntoAbogadosConMasCitasCuandoHayUnAbogadoConCitasEnElRangoDeFechas() {
-		// Inicialización
+		// Inicializaciï¿½n
 		agenda.agregarNuevoDia("un abogado", "martes", "2019/01/01");
 		agenda.agregarNuevaCita("un abogado", "2019/01/01", "12:00", "un cliente");
 		agenda.agregarNuevaCita("un abogado", "2019/01/01", "13:00", "otro cliente");
 
-		// Operación
+		// Operaciï¿½n
 		ConjuntoTDA abogadosConMasCitas = algoritmo.masCitas(agenda, "2019/01/01", "2019/01/31");
 		boolean abogadosConjuntoVacioAntesDeSacarAbogado = abogadosConMasCitas.conjuntoVacio();
 		String abogado = abogadosConMasCitas.elegir();
 		abogadosConMasCitas.sacar(abogado);
 
-		// Validación
+		// Validaciï¿½n
 		Assert.assertFalse(abogadosConjuntoVacioAntesDeSacarAbogado);
 		Assert.assertEquals("un abogado", abogado);
 		Assert.assertTrue(abogadosConMasCitas.conjuntoVacio());
 	}
 
 	@Test
+	
+	// OJO ! mal resultado !!
+	
 	public void testConjuntoAbogadosConMasCitasCuandoHayUnAbogadoConDosCitasYUnoConUnaCitaEnElRangoDeFechas() {
-		// Inicialización
+		// Inicializaciï¿½n
 		agenda.agregarNuevoDia("un abogado", "martes", "2019/01/01");
 		agenda.agregarNuevaCita("un abogado", "2019/01/01", "12:00", "un cliente");
 		agenda.agregarNuevaCita("un abogado", "2019/01/01", "13:00", "otro cliente");
 		agenda.agregarNuevoDia("otro abogado", "jueves", "2019/01/03");
 		agenda.agregarNuevaCita("otro abogado", "2019/01/03", "20:00", "un cliente");
 
-		// Operación
+		// Operaciï¿½n
 		ConjuntoTDA abogadosConMasCitas = algoritmo.masCitas(agenda, "2019/01/02", "2019/01/31");
 		String abogado = abogadosConMasCitas.elegir();
 		abogadosConMasCitas.sacar(abogado);
 
-		// Validación
+		// Validaciï¿½n
 		Assert.assertEquals("un abogado", abogado);
 		Assert.assertTrue(abogadosConMasCitas.conjuntoVacio());
 	}
 
 	@Test
 	public void testConjuntoAbogadosConMasCitasCuandoHayTresAbogadoConDosCitasCadaUnoEnElRangoDeFechas() {
-		// Inicialización
+		// Inicializaciï¿½n
 		agenda.agregarNuevoDia("un abogado", "miercoles", "2019/01/02");
 		agenda.agregarNuevaCita("un abogado", "2019/01/02", "12:00", "un cliente");
 		agenda.agregarNuevaCita("un abogado", "2019/01/02", "13:00", "otro cliente");
@@ -152,7 +155,7 @@ public class AlgoritmoTest {
 		List<String> abogadosEsperados = Arrays.asList("un abogado", "otro abogado", "un ultimo abogado");
 		List<String> abogadosDelConjunto = new ArrayList<String>();
 
-		// Operación
+		// Operaciï¿½n
 		ConjuntoTDA abogadosConMasCitas = algoritmo.masCitas(agenda, "2019/01/02", "2019/01/31");
 		while (!abogadosConMasCitas.conjuntoVacio()) {
 			String abogado = abogadosConMasCitas.elegir();
@@ -160,52 +163,52 @@ public class AlgoritmoTest {
 			abogadosDelConjunto.add(abogado);
 		}
 
-		// Validación
+		// Validaciï¿½n
 		Assert.assertEquals(abogadosEsperados, abogadosDelConjunto);
 	}
 
 	@Test
 	public void testAbogadoUltimaVezCuandoLaAgendaEstaVaciaDeberiaDevolverVacio() {
-		// Operación
+		// Operaciï¿½n
 		String abogado = algoritmo.abogadoUltimaVez(agenda, "un cliente");
 
-		// Validación
+		// Validaciï¿½n
 		Assert.assertEquals("", abogado);
 	}
 
 	@Test
 	public void testAbogadoUltimaVezCuandoNadieAtiendeAlClienteDeberiaDevolverVacio() {
-		// Inicialización
+		// Inicializaciï¿½n
 		agenda.agregarNuevoDia("un abogado", "martes", "2019/01/01");
 		agenda.agregarNuevaCita("un abogado", "2019/01/01", "13:00", "un cliente");
 		agenda.agregarNuevoDia("otro abogado", "miercoles", "2019/01/02");
 		agenda.agregarNuevaCita("otro abogado", "2019/01/02", "14:00", "un cliente");
 
-		// Operación
+		// Operaciï¿½n
 		String abogado = algoritmo.abogadoUltimaVez(agenda, "un cliente no atendido");
 
-		// Validación
+		// Validaciï¿½n
 		Assert.assertEquals("", abogado);
 	}
 
 	@Test
 	public void testAbogadoUltimaVezCuandoUnAbogadoAtiendeAlClienteDeberiaDevolverUnAbogado() {
-		// Inicialización
+		// Inicializaciï¿½n
 		agenda.agregarNuevoDia("un abogado", "martes", "2019/01/01");
 		agenda.agregarNuevaCita("un abogado", "2019/01/01", "13:00", "un cliente");
 		agenda.agregarNuevoDia("otro abogado", "miercoles", "2019/01/02");
 		agenda.agregarNuevaCita("otro abogado", "2019/01/02", "14:00", "otro cliente");
 
-		// Operación
+		// Operaciï¿½n
 		String abogado = algoritmo.abogadoUltimaVez(agenda, "un cliente");
 
-		// Validación
+		// Validaciï¿½n
 		Assert.assertEquals("un abogado", abogado);
 	}
 
 	@Test
 	public void testAbogadoUltimaVezCuandoOtroAbogadoAtiendeUltimoAlClienteDeberiaDevolverOtroAbogado() {
-		// Inicialización
+		// Inicializaciï¿½n
 		//Este test estaba mal, estaba al reves con el de arriba
 		agenda.agregarNuevoDia("un abogado", "martes", "2019/01/01");
 		agenda.agregarNuevaCita("un abogado", "2019/01/01", "13:00", "un cliente");
@@ -214,26 +217,26 @@ public class AlgoritmoTest {
 		agenda.agregarNuevoDia("otro abogado", "miercoles", "2019/01/02");
 		agenda.agregarNuevaCita("otro abogado", "2019/01/02", "12:00", "un cliente");
 
-		// Operación
+		// Operaciï¿½n
 		String abogado = algoritmo.abogadoUltimaVez(agenda, "un cliente");
 
-		// Validación
+		// Validaciï¿½n
 		Assert.assertEquals("un abogado", abogado);
 //		Assert.assertEquals("otro abogado", abogado);
 	}
 
 	@Test
 	public void testObtenerCitasCuandoLaAgendaEstaVaciaDeberiaDevolverMatrizVacia() {
-		// Operación
+		// Operaciï¿½n
 		String[][] citas = algoritmo.obtenerCitas(agenda, "un abogado", "2018/12/31");
 
-		// Validación
+		// Validaciï¿½n
 		Assert.assertEquals(0, citas.length);
 	}
 
 	@Test
 	public void testObtenerCitasCuandoLaAgendaTieneUnAbogadoConCitasOtraSemanaDeberiaDevolverMatrizVacia() {
-		// Inicialización
+		// Inicializaciï¿½n
 		agenda.agregarNuevoDia("un abogado", "lunes", "2019/01/07");
 		agenda.agregarNuevaCita("un abogado", "2019/01/07", "13:30", "un cliente");
 		agenda.agregarNuevoDia("un abogado", "martes", "2019/01/08");
@@ -241,16 +244,16 @@ public class AlgoritmoTest {
 		agenda.agregarNuevoDia("un abogado", "miercoles", "2019/01/09");
 		agenda.agregarNuevaCita("un abogado", "2019/01/09", "15:30", "un ultimo cliente");
 
-		// Operación
+		// Operaciï¿½n
 		String[][] citas = algoritmo.obtenerCitas(agenda, "un abogado", "2019/12/31");
 
-		// Validación
+		// Validaciï¿½n
 		Assert.assertEquals(0, citas.length);
 	}
 
 	@Test
 	public void testObtenerCitasCuandoLaAgendaTieneTresCitasEsaSemanaYUnaOtraSemanaDeberiaDevolverMatrizConDosCitas() {
-		// Inicialización
+		// Inicializaciï¿½n
 		agenda.agregarNuevoDia("un abogado", "miercoles", "2019/01/02");
 		agenda.agregarNuevaCita("un abogado", "2019/01/02", "10:30", "un cliente");
 		agenda.agregarNuevoDia("otro abogado", "miercoles", "2019/01/02");
@@ -264,10 +267,10 @@ public class AlgoritmoTest {
 		String[] segundaCitaEsperada = new String[] { "martes", "14:30", "otro cliente" };
 		String[] terceraCitaEsperada = new String[] { "miercoles", "10:30", "un cliente" };
 
-		// Operación
+		// Operaciï¿½n
 		String[][] citas = algoritmo.obtenerCitas(agenda, "un abogado", "2018/12/31");
 
-		// Validación
+		// Validaciï¿½n
 		Assert.assertEquals(3, citas.length);
 		Assert.assertArrayEquals(primeraCitaEsperada, citas[0]);
 		Assert.assertArrayEquals(segundaCitaEsperada, citas[1]);
@@ -276,29 +279,29 @@ public class AlgoritmoTest {
 
 	@Test
 	public void testConQuienSeReunioCuandoLaAgendaEstaVaciaDeberiaDevolverMatrizVacia() {
-		// Operación
+		// Operaciï¿½n
 		String[][] conQuienSeReunio = algoritmo.conQuienSeReunio(agenda, "un cliente");
 
-		// Validación
+		// Validaciï¿½n
 		Assert.assertEquals(0, conQuienSeReunio.length);
 	}
 
 	@Test
 	public void testConQuienSeReunioCuandoNoSeReunioConEseClienteDeberiaDevolverMatrizVacia() {
-		// Inicialización
+		// Inicializaciï¿½n
 		agenda.agregarNuevoDia("un abogado", "martes", "2019/01/01");
 		agenda.agregarNuevaCita("un abogado", "2019/01/01", "12:30", "un cliente");
 
-		// Operación
+		// Operaciï¿½n
 		String[][] reuniones = algoritmo.conQuienSeReunio(agenda, "otro cliente");
 
-		// Validación
+		// Validaciï¿½n
 		Assert.assertEquals(0, reuniones.length);
 	}
 
 	@Test
 	public void testConQuienSeReunioCuandoUnAbogadoSeReunioConEseClienteDeberiaDevolverMatrizConValores() {
-		// Inicialización
+		// Inicializaciï¿½n
 		agenda.agregarNuevoDia("un abogado", "martes", "2019/01/01");
 		agenda.agregarNuevaCita("un abogado", "2019/01/01", "09:00", "un cliente");
 		agenda.agregarNuevaCita("un abogado", "2019/01/01", "09:30", "un cliente");
@@ -309,10 +312,10 @@ public class AlgoritmoTest {
 		String[] segundaReunionEsperada = new String[] { "un abogado", "2019/01/01", "09:00" };
 		String[] terceraReunionEsperada = new String[] { "un abogado", "2019/01/01", "09:30" };
 
-		// Operación
+		// Operaciï¿½n
 		String[][] reuniones = algoritmo.conQuienSeReunio(agenda, "un cliente");
 
-		// Validación
+		// Validaciï¿½n
 		Assert.assertEquals(3, reuniones.length);
 		Assert.assertArrayEquals(primeraReunionEsperada, reuniones[0]);
 		Assert.assertArrayEquals(segundaReunionEsperada, reuniones[1]);
@@ -321,7 +324,7 @@ public class AlgoritmoTest {
 
 	@Test
 	public void testConQuienSeReunioCuandoDosAbogadoSeReunieronConEseClienteDeberiaDevolverMatrizConValores() {
-		// Inicialización
+		// Inicializaciï¿½n
 		agenda.agregarNuevoDia("un abogado", "martes", "2019/01/01");
 		agenda.agregarNuevaCita("un abogado", "2019/01/01", "09:00", "un cliente");
 		agenda.agregarNuevaCita("un abogado", "2019/01/01", "10:30", "un cliente");
@@ -338,10 +341,10 @@ public class AlgoritmoTest {
 		String[] terceraReunionEsperada = new String[] { "otro abogado", "2019/01/01", "10:30" };
 		String[] cuartaReunionEsperada = new String[] { "un abogado", "2019/01/01", "10:30" };
 
-		// Operación
+		// Operaciï¿½n
 		String[][] reuniones = algoritmo.conQuienSeReunio(agenda, "un cliente");
 
-		// Validación
+		// Validaciï¿½n
 		Assert.assertEquals(4, reuniones.length);
 		Assert.assertArrayEquals(primeraReunionEsperada, reuniones[0]);
 		Assert.assertArrayEquals(segundaReunionEsperada, reuniones[1]);
@@ -351,38 +354,38 @@ public class AlgoritmoTest {
 
 	@Test
 	public void testLibresTotalCuandoLaAgendaEstaVaciaDeberiaDevolverColaVacia() {
-		// Operación
+		// Operaciï¿½n
 		ColaPrioridadTDA horariosLibres = algoritmo.libresTotal(agenda, "2018/12/31");
 
-		// Validación
+		// Validaciï¿½n
 		Assert.assertTrue(horariosLibres.colaVacia());
 	}
 
 	@Test
 	public void testLibresTotalCuandoLaAgendaNoTieneDiasEsaSemanaDeberiaDevolverColaVacia() {
-		// Inicialización
+		// Inicializaciï¿½n
 		agenda.agregarNuevoDia("un abogado", "lunes", "2019/01/07");
 		agenda.agregarNuevoDia("un abogado", "martes", "2019/01/08");
 		agenda.agregarNuevoDia("un abogado", "miercoles", "2019/01/09");
 		agenda.agregarNuevoDia("un abogado", "jueves", "2019/01/10");
 
-		// Operación
+		// Operaciï¿½n
 		ColaPrioridadTDA horariosLibres = algoritmo.libresTotal(agenda, "2018/12/31");
 
-		// Validación
+		// Validaciï¿½n
 		Assert.assertTrue(horariosLibres.colaVacia());
 	}
 
 	@Test
 	public void testLibresTotalCuandoLaAgendaTieneUnDiaTotalmenteLibreEsaSemanaDeberiaDevolverColaConTodosLosHorarios() {
-		// Inicialización
+		// Inicializaciï¿½n
 		agenda.agregarNuevoDia("un abogado", "lunes", "2019/01/07");
 		agenda.agregarNuevoDia("un abogado", "martes", "2019/01/08");
 		agenda.agregarNuevoDia("un abogado", "miercoles", "2019/01/09");
 		agenda.agregarNuevoDia("un abogado", "jueves", "2019/01/10");
 		agenda.agregarNuevoDia("otro abogado", "martes", "2019/01/01");
 
-		// Operación
+		// Operaciï¿½n
 		ColaPrioridadTDA horariosLibres = algoritmo.libresTotal(agenda, "2018/12/31");
 		int cantidadElementosCola = 0;
 		String primerAbogado = horariosLibres.primero();
@@ -393,7 +396,7 @@ public class AlgoritmoTest {
 			cantidadElementosCola++;
 		}
 
-		// Validación
+		// Validaciï¿½n
 		/**
 		 * 24 horas Turnos de media hora 24*2 = 48
 		 */
@@ -404,7 +407,7 @@ public class AlgoritmoTest {
 
 	@Test
 	public void testLibresTotalCuandoLaAgendaTieneUnAbogadoLibrePrimerHorarioYOtroLibreUltimoHorarioEsaSemana() {
-		// Inicialización
+		// Inicializaciï¿½n
 		agenda.agregarNuevoDia("un abogado", "lunes", "2019/01/07");
 		agenda.agregarNuevoDia("un abogado", "martes", "2019/01/08");
 		agenda.agregarNuevoDia("un abogado", "miercoles", "2019/01/09");
@@ -414,7 +417,7 @@ public class AlgoritmoTest {
 		agenda.agregarNuevoDia("otro abogado", "martes", "2019/01/01");
 		agenda.agregarNuevaCita("otro abogado", "2019/01/01", "23:30", "un cliente");
 
-		// Operación
+		// Operaciï¿½n
 		ColaPrioridadTDA horariosLibres = algoritmo.libresTotal(agenda, "2018/12/31");
 		int cantidadElementosCola = 0;
 		String primerAbogado = horariosLibres.primero();
@@ -425,10 +428,10 @@ public class AlgoritmoTest {
 			cantidadElementosCola++;
 		}
 
-		// Validación
+		// Validaciï¿½n
 
 		/**
-		 * 48 turnos por día 2 abogados 2 turnos no disponibles (48*2)-2 = 94
+		 * 48 turnos por dï¿½a 2 abogados 2 turnos no disponibles (48*2)-2 = 94
 		 * Este calculo estaba mal, es 48 turnos por dia por toda la semana 2 no disponibles (47*7*2)-2 = 656
 		 */
 		

@@ -20,8 +20,25 @@ import tdas.ConjuntoTDA;
 public class Test {
 
 	public static void main(String[] args) {
+		
+		AgendaCitasTDA agenda = new AgendaCitas();
+	    agenda.inicializar();
+	    IAlgoritmo algoritmo = new Algoritmos();
+		
+		agenda.agregarNuevoDia("un abogado", "martes", "2019/01/01");
+		agenda.agregarNuevaCita("un abogado", "2019/01/01", "12:00", "un cliente");
+		agenda.agregarNuevaCita("un abogado", "2019/01/01", "13:00", "otro cliente");
 
-        AgendaCitasTDA act = new AgendaCitas();
+		// Operaci�n
+		ConjuntoTDA abogadosConMasCitas = algoritmo.masCitas(agenda, "2019/01/02", "2019/01/31");
+		while(!abogadosConMasCitas.conjuntoVacio()) {
+			String abogado = abogadosConMasCitas.elegir();
+			System.out.println(abogado);
+			abogadosConMasCitas.sacar(abogado);
+		}
+		System.out.println(abogadosConMasCitas.conjuntoVacio());
+
+        /*AgendaCitasTDA act = new AgendaCitas();
         act.inicializar();
         IAlgoritmo method = new Algoritmos();
         act.agregarNuevoDia("Juan", "Lunes", "2019/01/01");
@@ -74,7 +91,9 @@ public class Test {
        		 }
        	 }
        }
-              		
+           
+     */
+		
        // System.out.println(method.abogadoUltimaVez(act, "A"));
         
      /*   ColaPrioridadTDA c = new ColaPrioridad();
