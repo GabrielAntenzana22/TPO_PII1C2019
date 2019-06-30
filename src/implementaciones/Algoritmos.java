@@ -8,6 +8,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import algoritmos.IAlgoritmo;
 import tdas.AgendaCitasTDA;
@@ -31,7 +32,7 @@ public class Algoritmos implements IAlgoritmo {
 
 	@Override
 	public ConjuntoTDA masCitas(AgendaCitasTDA agenda, String fechaDesde, String fechaHasta) {
-		// TODO Auto-generated method stub
+
 		ConjuntoTDA aux = agenda.abogados();
 		ConjuntoTDA resultado = new Conjunto();
 		resultado.inicializar();
@@ -91,22 +92,35 @@ public class Algoritmos implements IAlgoritmo {
 
 	@Override
 	public String abogadoUltimaVez(AgendaCitasTDA agenda, String cliente) {
-		// TODO Auto-generated method stub
-		String resultado=null, abogado, ultimaFecha="0000/00/00", ultimoHorario="00:00";
+		String [] horas =  {"00:00","00:30","01:00","01:30","02:00","02:30","03:00","03:30","04:00","04:30",
+	            "05:00","05:30","06:00","06:30","07:00","07:30","08:00", "08:30","09:00","09:30",
+	            "10:00","10:30","11:00","11:30","12:30","13:00","13:30","14:00","14:30","15:00",
+	            "15:30","16:00","16:30","17:00","17:30","18:00","18:30","19:00","19:30","20:00",
+	            "20:30","21:00","21:30","22:00","22:30","23:00","23:30"};
+		String resultado="", abogado, ultimaFecha="0000/00/00", ultimoHorario="00:00";
 		ConjuntoTDA auxAbogados = agenda.abogados();
+		
+		//Recorro todos los abogados
 		while(!auxAbogados.conjuntoVacio()) {
 			abogado = auxAbogados.elegir();
 			ConjuntoTDA auxFechas = agenda.fechas(abogado);
+			
+			//Recorro las fechas
 			while(!auxFechas.conjuntoVacio()) {
 				String fecha = auxFechas.elegir();
-				ColaTDA auxHorarios = agenda.turnos(abogado, fecha);
-				while(!auxHorarios.colaVacia()) {
-					if(agenda.clienteEnCita(abogado, fecha, auxHorarios.primero())==cliente && fechaPosterior(ultimaFecha,fecha) && horaMasTemprana(ultimoHorario, auxHorarios.primero())) {
+
+				//Recorro los horarios
+				for (String hora: horas) {
+					
+					//Para cada turno que tuvo el cliente recorro y guardo cual fue el ultimo
+					if(agenda.existeCita(abogado, fecha, hora) 
+							&& agenda.clienteEnCita(abogado, fecha, hora).equalsIgnoreCase(cliente)
+							&& fechaPosterior(ultimaFecha,fecha) 
+							&& horaMasTardia(ultimoHorario, hora)) {
 						resultado = abogado;
 						ultimaFecha = fecha;
-						ultimoHorario = auxHorarios.primero();
+						ultimoHorario = hora;
 					}
-					auxHorarios.desacolar();
 				}
 				auxFechas.sacar(fecha);
 			}
@@ -114,7 +128,27 @@ public class Algoritmos implements IAlgoritmo {
 		}
 		return resultado;
 	}
+	
+	//Devuelve true si hora2 es mas temprano que hora1
 	private boolean horaMasTemprana(String hora1, String hora2) {
+		if((int)hora1.charAt(0)<(int)hora2.charAt(0)) {
+			return true;
+		}else {
+			if((int)hora1.charAt(0)==(int)hora2.charAt(0)&&(int)hora1.charAt(1)<(int)hora2.charAt(1)) {
+				return true;
+			}else {
+				if((int)hora1.charAt(0)==(int)hora2.charAt(0)&&(int)hora1.charAt(1)==(int)hora2.charAt(1)&&(int)hora1.charAt(3)<(int)hora2.charAt(3)) {
+				   return true;
+				}else {
+					return false;
+				}
+			}
+		}
+		
+	}
+	
+	//Devuelve true si hora2 es mas tarde que hora1
+	private boolean horaMasTardia(String hora1, String hora2) {
 		if((int)hora1.charAt(0)<(int)hora2.charAt(0)) {
 			return true;
 		}else {
@@ -135,45 +169,42 @@ public class Algoritmos implements IAlgoritmo {
 	@Override
 	public String[][] obtenerCitas(AgendaCitasTDA agenda, String abogado, String fecha) {
 		
-		int indiceFecha = 0;
+		String [][] citas =new String[7][0];
+		String [] horas =  {"00:00","00:30","01:00","01:30","02:00","02:30","03:00","03:30","04:00","04:30",
+	            "05:00","05:30","06:00","06:30","07:00","07:30","08:00", "08:30","09:00","09:30",
+	            "10:00","10:30","11:00","11:30","12:30","13:00","13:30","14:00","14:30","15:00",
+	            "15:30","16:00","16:30","17:00","17:30","18:00","18:30","19:00","19:30","20:00",
+	            "20:30","21:00","21:30","22:00","22:30","23:00","23:30"};
+		int indiceDia = 0;
 		
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
-					
+		Locale locale = Locale.getDefault();					
 		//Seteo las fechas principio y fin donde voy a buscar los turnos
 		Calendar auxCal = Calendar.getInstance();
 		auxCal.setTime(sdf.parse(fecha, new ParsePosition(0)));
 		
 		Calendar fechaSigLunes = getFechaAUnaSemana(fecha);
 		
-		List<List<String>> auxAbogados = new ArrayList<List<String>>();
 		//Sale del while cuando las fechas son iguales
 		while (auxCal.compareTo(fechaSigLunes)!=0) {
 		
-			//Obtengo los turnos para la fecha en la que estoy
-			String auxFecha = sdf.format(auxCal.getTime());
-			ColaTDA turnos = agenda.turnos(abogado, auxFecha);
-			
-			List<String> auxAbogado = new ArrayList<String>();
-			
-			int indiceHora = 0;
-			while (!turnos.colaVacia()) {
-				String auxTurno = turnos.primero();
-				turnos.desacolar();
+				//Recorro el array con las horas
+				for(String hora : horas) {
+					
+					String auxFecha = sdf.format(auxCal.getTime());
+					//Si el abogado tiene cita en esta fecha y hora busco al cliente y lo agrego					
+					if(agenda.existeCita(abogado, auxFecha, hora)){
+						String auxDia = auxCal.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, locale);
+						//Necesito el nombre del dia asi que tengo que buscarlo										
+						String [] elem = new String [] {auxDia,hora,agenda.clienteEnCita(abogado, auxFecha, hora)};
+						citas = agregarElementoCita(citas, elem, indiceDia);				
 
-				auxAbogado.add("DIA: "+auxFecha+" - HORA: "+auxTurno+" - CLIENTE: "	+agenda.clienteEnCita(abogado,auxFecha,auxTurno));
-				//Desacola en orden asi que los meto tal cual en el array
-//				citas[indiceFecha][indiceHora] = "DIA: "+auxFecha+" - HORA: "+auxTurno+" - CLIENTE: "
-//						+agenda.clienteEnCita(abogado,auxFecha,auxTurno);
-				
-				indiceHora++;
+					}
+
+				}
+				auxCal.add(Calendar.DAY_OF_MONTH, 1);
+				indiceDia++;
 			}
-			indiceFecha++;
-			auxCal.add(Calendar.DAY_OF_MONTH, 1);
-			
-		}		
-		
-		
-		String [][] citas =new String[a][a];
 		return citas;
 	}
 
@@ -191,15 +222,19 @@ public class Algoritmos implements IAlgoritmo {
 	@Override
 	public String[][] conQuienSeReunio(AgendaCitasTDA agenda, String cliente) {
 		
-		String [][] reuniones =new String[1000][1000];
-		List <String> fechasOrdenadas = new ArrayList<String> ();
-		int indiceAbogado=0 , indiceFechaOrdenada = 0;
+		String [][] reuniones =new String[0][0];
+		String [] horas =  {"00:00","00:30","01:00","01:30","02:00","02:30","03:00","03:30","04:00","04:30",
+	            "05:00","05:30","06:00","06:30","07:00","07:30","08:00", "08:30","09:00","09:30",
+	            "10:00","10:30","11:00","11:30","12:30","13:00","13:30","14:00","14:30","15:00",
+	            "15:30","16:00","16:30","17:00","17:30","18:00","18:30","19:00","19:30","20:00",
+	            "20:30","21:00","21:30","22:00","22:30","23:00","23:30"};
 		
 		ConjuntoTDA abogados = agenda.abogados();
 		
 		//Recorro todos los abogados
 		while (!abogados.conjuntoVacio()) {
 			
+			List <String> fechasOrdenadas = new ArrayList<String> ();
 			//Elijo un abogado
  			String auxAbogado = abogados.elegir();
 			abogados.sacar(auxAbogado);			
@@ -209,33 +244,28 @@ public class Algoritmos implements IAlgoritmo {
 				String auxFecha = fechas.elegir();
 				fechas.sacar(auxFecha);
 				fechasOrdenadas.add(auxFecha);
-				indiceFechaOrdenada++;
 				
 			}
 			
 			Collections.sort(fechasOrdenadas);
 			
-			int indiceTurno = 0;
 			//Desacolo una fecha
 			for (String fecha:fechasOrdenadas){
 				
-				ColaTDA turnos = agenda.turnos(auxAbogado, fecha);			
-
-				while (!turnos.colaVacia()) {
-					//Desacolo un turno
-					String auxTurno = turnos.primero();
-					turnos.desacolar();
+				//Recorro el array con las horas
+				for(String hora : horas) {
 					
-					//Solo lo meto en el array si corresponde al mismo cliente
-					if (agenda.clienteEnCita(auxAbogado,fecha,auxTurno).equalsIgnoreCase(cliente)) {
-						//Desacola en orden asi que los meto tal cual en el array
-						reuniones[indiceAbogado][indiceTurno] = "CLIENTE: "+cliente+" - ABOGADO: "+auxAbogado+
-								" - DIA: "+fecha+" - HORA: "+auxTurno;						
-						indiceTurno++;
+					//Si el abogado tiene cita en esta fecha y hora y es con el cliente que busco lo agrego
+					if(agenda.existeCita(auxAbogado, fecha, hora) 
+							&& agenda.clienteEnCita(auxAbogado, fecha, hora).equalsIgnoreCase(cliente)) {
+						
+						String [] elem = new String [] {auxAbogado,fecha,hora};
+						reuniones = agregarElementoReunion(reuniones, elem, 1, 2);				
+
 					}
+
 				}
 			}
-			indiceAbogado++;
 
 		}
 		
@@ -253,7 +283,7 @@ public class Algoritmos implements IAlgoritmo {
 	            "10:00","10:30","11:00","11:30","12:30","13:00","13:30","14:00","14:30","15:00",
 	            "15:30","16:00","16:30","17:00","17:30","18:00","18:30","19:00","19:30","20:00",
 	            "20:30","21:00","21:30","22:00","22:30","23:00","23:30"};
-		
+
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
 		
 		//Recorro todos los abogados
@@ -273,22 +303,73 @@ public class Algoritmos implements IAlgoritmo {
 			while (auxCal.compareTo(fechaSigLunes)!=0) {
 				
 				//Recorro el array con las horas
-				for(int i=0; i<horas.length;i++) {
+				for(String hora : horas) {
 					
-					//Obtengo los turnos para la fecha en la que estoy
-					String auxFecha = sdf.format(auxCal.getTime());					
-					if(!agenda.existeCita(auxAbogado, auxFecha, horas[i])) {
-						horariosLibresAbogados.acolar(auxAbogado, horas[i]);
+					//Si no hay cita en esta fecha y hora agrego el turno 
+					String auxFecha = sdf.format(auxCal.getTime());
+					if(!agenda.existeCita(auxAbogado, auxFecha, hora)) {
+						horariosLibresAbogados.acolar(auxAbogado, hora);
+
 					}
 				
 				}
 				//Avanzo al siguiente dia de la semana
 				auxCal.add(Calendar.DAY_OF_MONTH, 1);
+				
 			}
 		
 		}
 		return horariosLibresAbogados;
 	}
 
+	private String [][] agregarElementoCita (String [][] arrayOriginal, String [] elem, int indiceDia){
+		
+        String [][] nuevoArray = new String[7][arrayOriginal[indiceDia].length+1];
+        
+        for (int i = 0; i <= arrayOriginal[indiceDia].length; i++) {
+        	
+        	//Cuando llego al final agrego el elemento
+        	if (i==arrayOriginal[indiceDia].length) {
+        		arrayOriginal[indiceDia] = elem;
+        	
+        	//Copio los elementos del original
+        	} else {
+        		nuevoArray[i]=arrayOriginal[i];
+        	}
+        	
+        }        
+        return nuevoArray;
+  
+	}
+	
+	private String [][] agregarElementoReunion (String [][] arrayOriginal, String [] elem, int posFecha, int posHora){
+		
+        String [][] nuevoArray = new String[(arrayOriginal.length+1)][elem.length];
+        boolean agregado = false;
+        
+        for (int i = 0; i <= arrayOriginal.length; i++) {
+        	//Si no lo agregue lo agrego cuando llego al final
+        	if (i==arrayOriginal.length && !agregado){
+        		nuevoArray[i]=elem;
+        	
+        	//Si la fecha y hora del elemento nuevo es menor a alguno que ya esta lo inserto y corro todo 
+        	}else if (fechaPosterior (elem[posFecha],arrayOriginal[i][posFecha])
+        			|| (elem[posFecha].equalsIgnoreCase(arrayOriginal[i][posFecha]) && horaMasTardia(elem[posHora],arrayOriginal[i][posHora]))) {
+        		
+                String [] arrayAux = arrayOriginal[i];
+                nuevoArray[i]=elem;
+                nuevoArray[i+1]=arrayAux;
+                
+                //Uso un flag para saber que ya lo agregue
+                agregado = true;
+                i++;
+        	//Si no se cumple ninguna de las anteriores solamente copio
+        	} else { 
+        		nuevoArray[i]=arrayOriginal[i];
+        	}
 
+        }        
+        return nuevoArray;
+  
+	}
 }

@@ -337,7 +337,7 @@ public class AgendaCitas implements AgendaCitasTDA {
 	}
 
 	@Override
-	public String clienteEnCita(String abogado, String fecha, String hora) {
+	public String clienteEnCita(String abogado, String fecha, String cliente) {
 
 		NodoAgenda auxAbogado = primero;
 		
@@ -350,7 +350,7 @@ public class AgendaCitas implements AgendaCitasTDA {
 				while(auxDia!=null) {
 					if(auxDia.fecha.equalsIgnoreCase(fecha)) {
 					   ArbolCitasTDA auxArbol = auxDia.turnos;
-					   return clienteEnArbol(auxArbol,hora);
+					   return clienteEnArbol(auxArbol,cliente);
 					}
 					
 					//No es la fecha que busco asi que avanzo
@@ -361,7 +361,7 @@ public class AgendaCitas implements AgendaCitasTDA {
 			//No es el abogado que busco asi que avanzo
 			auxAbogado=auxAbogado.sigMedico;
 		}
-		return null;      //Nunca se llega a null por precondicion : Existe abogado, fehca y hora
+		return "";      //Devuelve vacio por precondicion : Existe abogado, fecha y hora
 	}
 	
 	private String clienteEnArbol(ArbolCitasTDA arbol, String hora) {
@@ -389,6 +389,7 @@ public class AgendaCitas implements AgendaCitasTDA {
 	}
 
 	@Override
+	//Con el test se ve que este tiene que devolver una cola con los clientes, no con las horas
 	public ColaTDA turnos(String abogado, String fecha) {
 
 		ColaTDA resultado = new Cola();
@@ -425,7 +426,9 @@ public class AgendaCitas implements AgendaCitasTDA {
 		
 		if (!arbol.arbolVacio()){
 			resultado = concatenar(resultado,acolarHoras(arbol.hijoIzquierdo()));
-			resultado.acolar(arbol.hora());
+			//Se cambia por cliente para cumplir con el test
+			//resultado.acolar(arbol.hora());
+			resultado.acolar(arbol.cliente());
 			resultado = concatenar(resultado,acolarHoras(arbol.hijoDerecho()));
 		}
 		return resultado;
