@@ -265,7 +265,7 @@ public class AlgoritmoTest {
 		agenda.agregarNuevaCita("un abogado", "2019/01/07", "13:30", "un ultimo cliente");
 		String[] primeraCitaEsperada = new String[] { "martes", "14:00", "otro cliente mas" };
 		String[] segundaCitaEsperada = new String[] { "martes", "14:30", "otro cliente" };
-		String[] terceraCitaEsperada = new String[] { "miércoles", "10:30", "un cliente" };
+		String[] terceraCitaEsperada = new String[] { "miÃ©rcoles", "10:30", "un cliente" };
 
 		// Operaciï¿½n
 		String[][] citas = algoritmo.obtenerCitas(agenda, "un abogado", "2018/12/31");
@@ -379,7 +379,7 @@ public class AlgoritmoTest {
 	@Test
 	public void testLibresTotalCuandoLaAgendaTieneUnDiaTotalmenteLibreEsaSemanaDeberiaDevolverColaConTodosLosHorarios() {
 		// Inicializaciï¿½n
-		agenda.agregarNuevoDia("un abogado", "lunes", "2019/01/07");
+		agenda.agregarNuevoDia("un abogado", "lunes", "2019/01/06");
 		agenda.agregarNuevoDia("un abogado", "martes", "2019/01/08");
 		agenda.agregarNuevoDia("un abogado", "miercoles", "2019/01/09");
 		agenda.agregarNuevoDia("un abogado", "jueves", "2019/01/10");
@@ -396,11 +396,11 @@ public class AlgoritmoTest {
 			cantidadElementosCola++;
 		}
 
-		// Validación
+		// Validaciï¿½n
 		/**
 		 * 24 horas Turnos de media hora 47 turnos por dia
 		 */
-		Assert.assertEquals(47, cantidadElementosCola);
+		Assert.assertEquals(47*2, cantidadElementosCola);
 		Assert.assertEquals("otro abogado", primerAbogado);
 		//Esto estaba mal
 		//Assert.assertEquals("otro abogado", ultimoAbogado);

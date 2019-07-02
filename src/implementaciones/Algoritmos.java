@@ -200,7 +200,11 @@ public class Algoritmos implements IAlgoritmo {
 						String auxDia = auxCal.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, locale);
 						//Necesito el nombre del dia asi que tengo que buscarlo										
 						String [] elem = new String [] {auxDia,hora,agenda.clienteEnCita(abogado, auxFecha, hora)};
-						citas = agregarElementoCita(citas, elem);				
+						citas = agregarElementoCita(citas, elem);		
+						
+						//Otra version con fecha formato AAAA/MM/DD
+//						String [] elem = new String [] {auxFecha,hora,agenda.clienteEnCita(abogado, auxFecha, hora)};
+//						citas = agregarElementoCita(citas, elem);			
 
 					}
 
@@ -380,4 +384,13 @@ public class Algoritmos implements IAlgoritmo {
         return nuevoArray;
   
 	}
+	/*
+	 SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
+	 Calendar auxCal = Calendar.getInstance();
+	 auxCal.setTime(sdf.parse(fecha, new ParsePosition(0)));
+	 while (auxCal.compareTo(fechaSigLunes)!=0) {}
+	 auxCal.add(Calendar.DAY_OF_MONTH, 1);
+	 String auxDia = auxCal.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, locale);  
+	 */
 }
+
