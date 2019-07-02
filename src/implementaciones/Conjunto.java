@@ -38,7 +38,7 @@ public class Conjunto implements ConjuntoTDA {
 	public void sacar(String valor) {
 		// TODO Auto-generated method stub
 		int i = 0;
-		while (i<cant && a[i]!=valor) { 
+		while (i<cant && !a[i].equals(valor)) { 
 		i++;
 		}
 		if (i<cant){
@@ -51,7 +51,7 @@ public class Conjunto implements ConjuntoTDA {
 	public boolean pertenece(String valor) {
 		// TODO Auto-generated method stub
 		int i = 0;
-		while (i<cant && a[i]!=valor) i++;
+		while (i<cant && !a[i].equals(valor)) i++;
 		return (i < cant);
 	}
 

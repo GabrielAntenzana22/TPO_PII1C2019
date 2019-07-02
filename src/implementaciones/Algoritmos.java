@@ -172,48 +172,16 @@ public class Algoritmos implements IAlgoritmo {
 	@Override
 	public String[][] obtenerCitas(AgendaCitasTDA agenda, String abogado, String fecha) {
 		
-		String [][] citas =new String[7][0];
+		String [][] citas =new String[0][0];
 		String [] horas =  {"00:00","00:30","01:00","01:30","02:00","02:30","03:00","03:30","04:00","04:30",
 	            "05:00","05:30","06:00","06:30","07:00","07:30","08:00", "08:30","09:00","09:30",
 	            "10:00","10:30","11:00","11:30","12:30","13:00","13:30","14:00","14:30","15:00",
 	            "15:30","16:00","16:30","17:00","17:30","18:00","18:30","19:00","19:30","20:00",
 	            "20:30","21:00","21:30","22:00","22:30","23:00","23:30"};
 		
-		String[][] resultado = new String[100][3];
-		SimpleDateFormat sdf = new SimpleDateFormat ("yyyy/MM/dd");
-		Calendar auxCal = Calendar.getInstance();
-		auxCal.setTime(sdf.parse(fecha, new ParsePosition(0)));
-		Calendar fechaSigLunes = getFechaAUnaSemana(fecha);
-		Locale locale = Locale.getDefault();
-		int i = 0;
-		while(auxCal.compareTo(fechaSigLunes)!=0) {
-			String auxFecha = sdf.format(auxCal.getTime());	
-			for(String hora : horas) {
-				if(agenda.existeCita(abogado, auxFecha, hora)) {
-					String auxDia = auxCal.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.forLanguageTag("es-ES"));
-					resultado[i][0] = auxDia;
-					resultado[i][1] = hora;
-					resultado[i][2] = agenda.clienteEnCita(abogado, auxFecha, hora);
-					i++;
-				}
-			}
-			auxCal.add(Calendar.DAY_OF_MONTH, 1);
-		}
-		String[][] resultado2 = new String[i][3];
-		if(resultado[0][0]!=null) {
-		   for(int j=0;j<i;j++) {
-			   for(int k=0;k<3;k++ ) {
-			   	   resultado2[j][k] = resultado[j][k];
-		    	}
-		   }
-		}
-		return resultado2;
-		/*
-		int indiceDia = 0;
-		
 		
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
-		Locale locale = Locale.getDefault();					
+		Locale locale = Locale.forLanguageTag("es-ES");
 		//Seteo las fechas principio y fin donde voy a buscar los turnos
 		Calendar auxCal = Calendar.getInstance();
 		auxCal.setTime(sdf.parse(fecha, new ParsePosition(0)));
@@ -232,16 +200,15 @@ public class Algoritmos implements IAlgoritmo {
 						String auxDia = auxCal.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, locale);
 						//Necesito el nombre del dia asi que tengo que buscarlo										
 						String [] elem = new String [] {auxDia,hora,agenda.clienteEnCita(abogado, auxFecha, hora)};
-						citas = agregarElementoCita(citas, elem, indiceDia);				
+						citas = agregarElementoCita(citas, elem);				
 
 					}
 
 				}
 				auxCal.add(Calendar.DAY_OF_MONTH, 1);
-				indiceDia++;
 			}
 		return citas;
-		*/
+		
 	}
 
 	//Devuelve la fecha en Date sumandole 7 dias
@@ -327,7 +294,11 @@ public class Algoritmos implements IAlgoritmo {
 			
 			//Elijo un abogado
  			String auxAbogado = listaAbogados.elegir();
- 			listaAbogados.sacar(auxAbogado);	
+ 			listaAbogados.sacar(auxAbogado);
+ 			
+ 			//Obtengo todas las fechas
+ 			ConjuntoTDA fechas = agenda.fechas(auxAbogado);
+ 			
 			
 			//Seteo las fechas principio y fin donde voy a buscar los turnos
 			Calendar auxCal = Calendar.getInstance();
@@ -343,7 +314,8 @@ public class Algoritmos implements IAlgoritmo {
 					
 					//Si no hay cita en esta fecha y hora agrego el turno 
 					String auxFecha = sdf.format(auxCal.getTime());
-					if(!agenda.existeCita(auxAbogado, auxFecha, hora)) {
+					if(fechas.pertenece(auxFecha) && !agenda.existeCita(auxAbogado, auxFecha, hora)) {
+
 						horariosLibresAbogados.acolar(auxAbogado, hora);
 
 					}
@@ -358,15 +330,15 @@ public class Algoritmos implements IAlgoritmo {
 		return horariosLibresAbogados;
 	}
 
-	private String [][] agregarElementoCita (String [][] arrayOriginal, String [] elem, int indiceDia){
+	private String [][] agregarElementoCita (String [][] arrayOriginal, String [] elem){
 		
-        String [][] nuevoArray = new String[7][arrayOriginal[indiceDia].length+1];
+		String [][] nuevoArray = new String[(arrayOriginal.length+1)][elem.length];
         
-        for (int i = 0; i <= arrayOriginal[indiceDia].length; i++) {
+        for (int i = 0; i <= arrayOriginal.length; i++) {
         	
         	//Cuando llego al final agrego el elemento
-        	if (i==arrayOriginal[indiceDia].length) {
-        		arrayOriginal[indiceDia] = elem;
+        	if (i==arrayOriginal.length){
+        		nuevoArray[i]=elem;
         	
         	//Copio los elementos del original
         	} else {

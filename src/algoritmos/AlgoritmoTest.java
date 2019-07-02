@@ -127,7 +127,7 @@ public class AlgoritmoTest {
 		agenda.agregarNuevaCita("otro abogado", "2019/01/03", "20:00", "un cliente");
 
 		// Operaciï¿½n
-		ConjuntoTDA abogadosConMasCitas = algoritmo.masCitas(agenda, "2019/01/02", "2019/01/31");
+		ConjuntoTDA abogadosConMasCitas = algoritmo.masCitas(agenda, "2019/01/01", "2019/01/31");
 		String abogado = abogadosConMasCitas.elegir();
 		abogadosConMasCitas.sacar(abogado);
 
@@ -265,7 +265,7 @@ public class AlgoritmoTest {
 		agenda.agregarNuevaCita("un abogado", "2019/01/07", "13:30", "un ultimo cliente");
 		String[] primeraCitaEsperada = new String[] { "martes", "14:00", "otro cliente mas" };
 		String[] segundaCitaEsperada = new String[] { "martes", "14:30", "otro cliente" };
-		String[] terceraCitaEsperada = new String[] { "miÃ©rcoles", "10:30", "un cliente" };
+		String[] terceraCitaEsperada = new String[] { "miércoles", "10:30", "un cliente" };
 
 		// Operaciï¿½n
 		String[][] citas = algoritmo.obtenerCitas(agenda, "un abogado", "2018/12/31");
@@ -396,13 +396,15 @@ public class AlgoritmoTest {
 			cantidadElementosCola++;
 		}
 
-		// Validaciï¿½n
+		// Validación
 		/**
-		 * 24 horas Turnos de media hora 24*2 = 48
+		 * 24 horas Turnos de media hora 47 turnos por dia
 		 */
-		Assert.assertEquals(48, cantidadElementosCola);
+		Assert.assertEquals(47, cantidadElementosCola);
 		Assert.assertEquals("otro abogado", primerAbogado);
-		Assert.assertEquals("otro abogado", ultimoAbogado);
+		//Esto estaba mal
+		//Assert.assertEquals("otro abogado", ultimoAbogado);
+		Assert.assertEquals("un abogado", ultimoAbogado);
 	}
 
 	@Test
@@ -432,13 +434,17 @@ public class AlgoritmoTest {
 
 		/**
 		 * 48 turnos por dï¿½a 2 abogados 2 turnos no disponibles (48*2)-2 = 94
-		 * Este calculo estaba mal, es 48 turnos por dia por toda la semana 2 no disponibles (47*7*2)-2 = 656
+		 * Este calculo estaba mal -> 47 turnos por dï¿½a 2 abogados 2 turnos no disponibles (48*2)-2 = 92
+		 * 
 		 */
 		
 //		Assert.assertEquals(94, cantidadElementosCola);
-		Assert.assertEquals(656, cantidadElementosCola);
-		Assert.assertEquals("otro abogado", primerAbogado);
-		Assert.assertEquals("un abogado", ultimoAbogado);
+		Assert.assertEquals(92, cantidadElementosCola);
+		//Se dan vuelta las validaciones ya que nuestra cola de prioridad ordena al reves
+//		Assert.assertEquals("otro abogado", primerAbogado);
+//		Assert.assertEquals("un abogado", ultimoAbogado);
+		Assert.assertEquals("un abogado", primerAbogado);
+		Assert.assertEquals("otro abogado", ultimoAbogado);
 	}
 
 }

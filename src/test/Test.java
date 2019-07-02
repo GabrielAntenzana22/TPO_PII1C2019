@@ -150,7 +150,11 @@ public class Test {
         	cola.dasacolar();
         }*/
         
-        
+		ConjuntoTDA conj = new Conjunto();
+		conj.inicializar();
+		conj.agregar("2019/01/01");
+		
+		System.out.println(conj.pertenece("2019/01/01"));
 	}
 	
 }
