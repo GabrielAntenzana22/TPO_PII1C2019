@@ -112,7 +112,7 @@ public class AgendaCitas implements AgendaCitasTDA {
 						}
 					}
 					
-					//Si entra acá inserta el dia como ultimo
+					//Si entra acï¿½ inserta el dia como ultimo
 					if(fechaPosterior(auxAnt.fecha,fecha) && auxPost==null){
 						auxAnt.siguienteFecha=auxDia;
 						auxDia.siguienteFecha=null;
@@ -337,7 +337,7 @@ public class AgendaCitas implements AgendaCitasTDA {
 	}
 
 	@Override
-	public String clienteEnCita(String abogado, String fecha, String cliente) {
+	public String clienteEnCita(String abogado, String fecha, String hora) {
 
 		NodoAgenda auxAbogado = primero;
 		
@@ -350,7 +350,7 @@ public class AgendaCitas implements AgendaCitasTDA {
 				while(auxDia!=null) {
 					if(auxDia.fecha.equalsIgnoreCase(fecha)) {
 					   ArbolCitasTDA auxArbol = auxDia.turnos;
-					   return clienteEnArbol(auxArbol,cliente);
+					   return clienteEnArbol(auxArbol,hora);
 					}
 					
 					//No es la fecha que busco asi que avanzo
@@ -451,12 +451,12 @@ public class AgendaCitas implements AgendaCitasTDA {
 			
 			//Imprimo todas las fechas para ese abogado
 			while(auxd!=null) {
-			   System.out.println(auxd.dia+" "+auxd.fecha);
+			   System.out.println("-"+auxd.dia+" "+auxd.fecha);
 			   ArbolCitasTDA auxArbol = auxd.turnos;
 			   
 			   //Imprimo todas las horas y clientes para ese dia
 			   if(auxArbol!=null) {
-				 System.out.println("Hora  Cliente");
+				 //System.out.println("Hora  Cliente");
 			     inOrder(auxArbol);
 			   }
 			   auxd=auxd.siguienteFecha;

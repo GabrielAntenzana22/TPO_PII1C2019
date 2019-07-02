@@ -265,7 +265,7 @@ public class AlgoritmoTest {
 		agenda.agregarNuevaCita("un abogado", "2019/01/07", "13:30", "un ultimo cliente");
 		String[] primeraCitaEsperada = new String[] { "martes", "14:00", "otro cliente mas" };
 		String[] segundaCitaEsperada = new String[] { "martes", "14:30", "otro cliente" };
-		String[] terceraCitaEsperada = new String[] { "miercoles", "10:30", "un cliente" };
+		String[] terceraCitaEsperada = new String[] { "miércoles", "10:30", "un cliente" };
 
 		// Operaci�n
 		String[][] citas = algoritmo.obtenerCitas(agenda, "un abogado", "2018/12/31");

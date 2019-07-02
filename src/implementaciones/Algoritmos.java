@@ -178,7 +178,39 @@ public class Algoritmos implements IAlgoritmo {
 	            "10:00","10:30","11:00","11:30","12:30","13:00","13:30","14:00","14:30","15:00",
 	            "15:30","16:00","16:30","17:00","17:30","18:00","18:30","19:00","19:30","20:00",
 	            "20:30","21:00","21:30","22:00","22:30","23:00","23:30"};
+		
+		String[][] resultado = new String[100][3];
+		SimpleDateFormat sdf = new SimpleDateFormat ("yyyy/MM/dd");
+		Calendar auxCal = Calendar.getInstance();
+		auxCal.setTime(sdf.parse(fecha, new ParsePosition(0)));
+		Calendar fechaSigLunes = getFechaAUnaSemana(fecha);
+		Locale locale = Locale.getDefault();
+		int i = 0;
+		while(auxCal.compareTo(fechaSigLunes)!=0) {
+			String auxFecha = sdf.format(auxCal.getTime());	
+			for(String hora : horas) {
+				if(agenda.existeCita(abogado, auxFecha, hora)) {
+					String auxDia = auxCal.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.forLanguageTag("es-ES"));
+					resultado[i][0] = auxDia;
+					resultado[i][1] = hora;
+					resultado[i][2] = agenda.clienteEnCita(abogado, auxFecha, hora);
+					i++;
+				}
+			}
+			auxCal.add(Calendar.DAY_OF_MONTH, 1);
+		}
+		String[][] resultado2 = new String[i][3];
+		if(resultado[0][0]!=null) {
+		   for(int j=0;j<i;j++) {
+			   for(int k=0;k<3;k++ ) {
+			   	   resultado2[j][k] = resultado[j][k];
+		    	}
+		   }
+		}
+		return resultado2;
+		/*
 		int indiceDia = 0;
+		
 		
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
 		Locale locale = Locale.getDefault();					
@@ -209,6 +241,7 @@ public class Algoritmos implements IAlgoritmo {
 				indiceDia++;
 			}
 		return citas;
+		*/
 	}
 
 	//Devuelve la fecha en Date sumandole 7 dias
